@@ -1,0 +1,482 @@
+[
+  {
+    "id": 1,
+    "topic": "Contracts",
+    "word": "Agreement",
+    "phonetic": "/əˈɡriːmənt/",
+    "definition": "A formal decision or arrangement between two or more parties.",
+    "example": "According to the agreement, the project must be completed by December."
+  },
+  {
+    "id": 2,
+    "topic": "Contracts",
+    "word": "Assurance",
+    "phonetic": "/əˈʃʊərəns/",
+    "definition": "A promise or guarantee that something is true or will happen.",
+    "example": "The sales manager gave his assurance that the delivery would arrive on time."
+  },
+  {
+    "id": 3,
+    "topic": "Contracts",
+    "word": "Cancellation",
+    "phonetic": "/ˌkænsəˈleɪʃn/",
+    "definition": "The act of stopping something that was previously planned or arranged.",
+    "example": "The clause states that there is a fee for the cancellation of the service."
+  },
+  {
+    "id": 4,
+    "topic": "Contracts",
+    "word": "Determine",
+    "phonetic": "/dɪˈtɜːmɪn/",
+    "definition": "To discover the facts or arrive at a conclusion or decision.",
+    "example": "The investigation will determine who was responsible for the error."
+  },
+  {
+    "id": 5,
+    "topic": "Contracts",
+    "word": "Engagement",
+    "phonetic": "/ɪnˈɡeɪdʒmənt/",
+    "definition": "An arrangement to do something or a formal involvement in a task.",
+    "example": "The consultant's engagement with the firm lasted for six months."
+  },
+  {
+    "id": 6,
+    "topic": "Contracts",
+    "word": "Establish",
+    "phonetic": "/ɪˈstæblɪʃ/",
+    "definition": "To start or create an organization, system, or set of rules.",
+    "example": "The two companies hope to establish a long-term business relationship."
+  },
+  {
+    "id": 7,
+    "topic": "Contracts",
+    "word": "Obligate",
+    "phonetic": "/ˈɒblɪɡeɪt/",
+    "definition": "To force someone to do something because it is the law or a rule.",
+    "example": "The contract obligates the tenant to pay the rent on the first of every month."
+  },
+  {
+    "id": 8,
+    "topic": "Contracts",
+    "word": "Party",
+    "phonetic": "/ˈpɑːti/",
+    "definition": "A person or group of people involved in a legal agreement or dispute.",
+    "example": "Both parties must sign the document for it to be legally binding."
+  },
+  {
+    "id": 9,
+    "topic": "Contracts",
+    "word": "Provision",
+    "phonetic": "/prəˈvɪʒn/",
+    "definition": "A specific condition or rule included within a legal document.",
+    "example": "There is a special provision in the contract regarding overtime pay."
+  },
+  {
+    "id": 10,
+    "topic": "Contracts",
+    "word": "Resolve",
+    "phonetic": "/rɪˈzɒlv/",
+    "definition": "To find an acceptable solution to a problem or difficulty.",
+    "example": "The mediator helped both sides resolve their disagreement peacefully."
+  },
+  {
+    "id": 11,
+    "topic": "Marketing",
+    "word": "Attract",
+    "phonetic": "/əˈtrækt/",
+    "definition": "To pull or draw someone's interest or attention toward something.",
+    "example": "The new advertising campaign is designed to attract younger customers."
+  },
+  {
+    "id": 12,
+    "topic": "Marketing",
+    "word": "Consume",
+    "phonetic": "/kənˈsjuːm/",
+    "definition": "To use up resources, or to buy and use goods and services.",
+    "example": "Modern printers consume a large amount of electricity."
+  },
+  {
+    "id": 13,
+    "topic": "Marketing",
+    "word": "Convince",
+    "phonetic": "/kənˈvɪns/",
+    "definition": "To make someone believe that something is true or to persuade them.",
+    "example": "It was difficult to convince the board to increase the marketing budget."
+  },
+  {
+    "id": 14,
+    "topic": "Marketing",
+    "word": "Currently",
+    "phonetic": "/ˈkʌrəntli/",
+    "definition": "At the present time; now.",
+    "example": "We are currently reviewing our strategy for the upcoming fiscal year."
+  },
+  {
+    "id": 15,
+    "topic": "Marketing",
+    "word": "Fad",
+    "phonetic": "/fæd/",
+    "definition": "Something that is very popular for a short period of time.",
+    "example": "Market researchers need to tell the difference between a real trend and a fad."
+  },
+  {
+    "id": 16,
+    "topic": "Marketing",
+    "word": "Inspiration",
+    "phonetic": "/ˌɪnspəˈreɪʃn/",
+    "definition": "A sudden brilliant idea or a person/thing that motivates others.",
+    "example": "The designer found inspiration for the logo in traditional Japanese art."
+  },
+  {
+    "id": 17,
+    "topic": "Marketing",
+    "word": "Market",
+    "phonetic": "/ˈmɑːkɪt/",
+    "definition": "To advertise or promote a product to a specific group of people.",
+    "example": "The company decided to market the new beverage as a health drink."
+  },
+  {
+    "id": 18,
+    "topic": "Marketing",
+    "word": "Persuade",
+    "phonetic": "/pəˈsweɪd/",
+    "definition": "To make someone do something by giving them good reasons.",
+    "example": "A good salesperson knows how to persuade customers to buy."
+  },
+  {
+    "id": 19,
+    "topic": "Marketing",
+    "word": "Satisfy",
+    "phonetic": "/ˈsætɪsfaɪ/",
+    "definition": "To meet the needs, desires, or expectations of someone.",
+    "example": "Our primary goal is to satisfy the requirements of our clients."
+  },
+  {
+    "id": 20,
+    "topic": "Marketing",
+    "word": "Productive",
+    "phonetic": "/prəˈdʌktɪv/",
+    "definition": "Achieving or producing a lot of results or goods.",
+    "example": "The morning meeting was very productive and we finished the plan early."
+  },
+  {
+    "id": 21,
+    "topic": "Warranties",
+    "word": "Characteristic",
+    "phonetic": "/ˌkærəktəˈrɪstɪk/",
+    "definition": "A special quality or feature that makes someone or something different from others.",
+    "example": "One characteristic of this laptop is its extremely long battery life."
+  },
+  {
+    "id": 22,
+    "topic": "Warranties",
+    "word": "Consequence",
+    "phonetic": "/ˈkɒnsɪkwəns/",
+    "definition": "A result or effect of an action or condition, often an unpleasant one.",
+    "example": "The consequence of failing to follow the instructions is a voided warranty."
+  },
+  {
+    "id": 23,
+    "topic": "Warranties",
+    "word": "Consider",
+    "phonetic": "/kənˈsɪdə(r)/",
+    "definition": "To think carefully about something, typically before making a decision.",
+    "example": "Please consider all the terms and conditions before signing the document."
+  },
+  {
+    "id": 24,
+    "topic": "Warranties",
+    "word": "Cover",
+    "phonetic": "/ˈkʌvə(r)/",
+    "definition": "To provide protection against loss, damage, or accidents.",
+    "example": "Does this insurance policy cover water damage to the office equipment?"
+  },
+  {
+    "id": 25,
+    "topic": "Warranties",
+    "word": "Expiration",
+    "phonetic": "/ˌekspəˈreɪʃn/",
+    "definition": "The end of a period of time during which an agreement is official.",
+    "example": "You should renew your subscription before the expiration date."
+  },
+  {
+    "id": 26,
+    "topic": "Warranties",
+    "word": "Frequently",
+    "phonetic": "/ˈfriːkwəntli/",
+    "definition": "Happening often or many times.",
+    "example": "The software is updated frequently to fix minor bugs and security issues."
+  },
+  {
+    "id": 27,
+    "topic": "Warranties",
+    "word": "Imply",
+    "phonetic": "/ɪmˈplaɪ/",
+    "definition": "To suggest something is true without saying it directly.",
+    "example": "The high price of the product does not necessarily imply high quality."
+  },
+  {
+    "id": 28,
+    "topic": "Warranties",
+    "word": "Promise",
+    "phonetic": "/ˈprɒmɪs/",
+    "definition": "A statement telling someone that you will definitely do something.",
+    "example": "The company failed to keep its promise to repair the machine for free."
+  },
+  {
+    "id": 29,
+    "topic": "Warranties",
+    "word": "Protect",
+    "phonetic": "/prəˈtekt/",
+    "definition": "To keep someone or something safe from injury, damage, or loss.",
+    "example": "The warranty is designed to protect the consumer from defective parts."
+  },
+  {
+    "id": 30,
+    "topic": "Warranties",
+    "word": "Reputation",
+    "phonetic": "/ˌrepjuˈteɪʃn/",
+    "definition": "The general opinion that people have about someone or something.",
+    "example": "That manufacturer has a reputation for producing very reliable engines."
+  },
+  {
+    "id": 31,
+    "topic": "Warranties",
+    "word": "Require",
+    "phonetic": "/rɪˈkwaɪə(r)/",
+    "definition": "To need something or make something necessary.",
+    "example": "Most repairs require you to show your original receipt as proof of purchase."
+  },
+  {
+    "id": 32,
+    "topic": "Warranties",
+    "word": "Variety",
+    "phonetic": "/vəˈraɪəti/",
+    "definition": "A number of different types of the same thing.",
+    "example": "The store offers a wide variety of extended warranty plans."
+  },
+  {
+    "id": 33,
+    "topic": "Business Planning",
+    "word": "Address",
+    "phonetic": "/əˈdres/",
+    "definition": "To give attention to or deal with a matter or problem.",
+    "example": "The CEO will address the issue of falling sales at the next meeting."
+  },
+  {
+    "id": 34,
+    "topic": "Business Planning",
+    "word": "Avoid",
+    "phonetic": "/əˈvɔɪd/",
+    "definition": "To stay away from someone or something, or prevent something from happening.",
+    "example": "Careful planning helps the company avoid unnecessary risks."
+  },
+  {
+    "id": 35,
+    "topic": "Business Planning",
+    "word": "Demonstrate",
+    "phonetic": "/ˈdemənstreɪt/",
+    "definition": "To show clearly that something exists or is true by giving proof.",
+    "example": "We need to demonstrate that our new product is better than the competition."
+  },
+  {
+    "id": 36,
+    "topic": "Business Planning",
+    "word": "Develop",
+    "phonetic": "/dɪˈveləp/",
+    "definition": "To grow or change into a more advanced or larger form.",
+    "example": "The marketing team is working to develop a new brand identity."
+  },
+  {
+    "id": 37,
+    "topic": "Business Planning",
+    "word": "Evaluate",
+    "phonetic": "/ɪˈvæljueɪt/",
+    "definition": "To judge or calculate the quality, importance, or value of something.",
+    "example": "Management will evaluate the success of the project after six months."
+  },
+  {
+    "id": 38,
+    "topic": "Business Planning",
+    "word": "Gather",
+    "phonetic": "/ˈɡæðə(r)/",
+    "definition": "To collect several things together, often from different places or people.",
+    "example": "We need to gather more information about our customers' spending habits."
+  },
+  {
+    "id": 39,
+    "topic": "Business Planning",
+    "word": "Offer",
+    "phonetic": "/ˈɒfə(r)/",
+    "definition": "To ask someone if they would like to have something or if they would like you to do something.",
+    "example": "The company decided to offer a discount to its most loyal clients."
+  },
+  {
+    "id": 40,
+    "topic": "Business Planning",
+    "word": "Primary",
+    "phonetic": "/ˈpraɪməri/",
+    "definition": "More important than anything else; main.",
+    "example": "Our primary concern is the safety of our employees."
+  },
+  {
+    "id": 41,
+    "topic": "Technology",
+    "word": "Access",
+    "phonetic": "/ˈækses/",
+    "definition": "The right or opportunity to use or see something.",
+    "example": "You need a password to access the company's confidential files."
+  },
+  {
+    "id": 42,
+    "topic": "Technology",
+    "word": "Allocate",
+    "phonetic": "/ˈæləkeɪt/",
+    "definition": "To give something to be used for a particular purpose.",
+    "example": "The IT department will allocate a new laptop to every new employee."
+  },
+  {
+    "id": 43,
+    "topic": "Technology",
+    "word": "Compatible",
+    "phonetic": "/kəmˈpætəbl/",
+    "definition": "Able to exist or work with something else without causing problems.",
+    "example": "This software is not compatible with older operating systems."
+  },
+  {
+    "id": 44,
+    "topic": "Technology",
+    "word": "Delete",
+    "phonetic": "/dɪˈliːt/",
+    "definition": "To remove something that has been written or stored on a computer.",
+    "example": "Be careful not to delete any important documents by mistake."
+  },
+  {
+    "id": 45,
+    "topic": "Technology",
+    "word": "Display",
+    "phonetic": "/dɪˈspleɪ/",
+    "definition": "To show information in visual form on a screen.",
+    "example": "The monitor can display high-resolution images and videos."
+  },
+  {
+    "id": 46,
+    "topic": "Technology",
+    "word": "Duplicate",
+    "phonetic": "/ˈdjuːplɪkeɪt/",
+    "definition": "To make an exact copy of something.",
+    "example": "It is a good idea to duplicate your files on an external hard drive."
+  },
+  {
+    "id": 47,
+    "topic": "Technology",
+    "word": "Failure",
+    "phonetic": "/ˈfeɪljə(r)/",
+    "definition": "A situation in which something does not work as it should.",
+    "example": "A power failure caused the entire office network to shut down."
+  },
+  {
+    "id": 48,
+    "topic": "Technology",
+    "word": "Figure out",
+    "phonetic": "/ˈfɪɡər aʊt/",
+    "definition": "To understand or find the solution to a problem after thinking about it.",
+    "example": "We need to figure out why the printer is making a strange noise."
+  },
+  {
+    "id": 49,
+    "topic": "Technology",
+    "word": "Ignore",
+    "phonetic": "/ɪɡˈnɔː(r)/",
+    "definition": "To pay no attention to something or someone.",
+    "example": "You should not ignore the system warning messages on your screen."
+  },
+  {
+    "id": 50,
+    "topic": "Technology",
+    "word": "Install",
+    "phonetic": "/ɪnˈstɔːl/",
+    "definition": "To put a new program or piece of hardware onto a computer system.",
+    "example": "I need to install the latest version of the antivirus software."
+  },
+  {
+    "id": 51,
+    "topic": "Technology",
+    "word": "Inventory",
+    "phonetic": "/ˈɪnvəntri/",
+    "definition": "A detailed list of all the goods or equipment in a particular place.",
+    "example": "The store keeps an inventory of all its electronic components."
+  },
+  {
+    "id": 52,
+    "topic": "Technology",
+    "word": "Network",
+    "phonetic": "/ˈnetwɜːk/",
+    "definition": "A system of computers that are connected to share information.",
+    "example": "Our office network allows us to share files quickly and easily."
+  },
+  {
+    "id": 53,
+    "topic": "Technology",
+    "word": "Permit",
+    "phonetic": "/pəˈmɪt/",
+    "definition": "To allow something to happen or to allow someone to do something.",
+    "example": "The security system will only permit authorized users to enter."
+  },
+  {
+    "id": 54,
+    "topic": "Technology",
+    "word": "Procedure",
+    "phonetic": "/prəˈsiːdʒə(r)/",
+    "definition": "A set of actions that is the official or right way of doing something.",
+    "example": "The technician followed the standard procedure to fix the server."
+  },
+  {
+    "id": 55,
+    "topic": "Technology",
+    "word": "Replace",
+    "phonetic": "/rɪˈpleɪs/",
+    "definition": "To take the place of something, or to put something new in the place of something old.",
+    "example": "The company decided to replace all the old monitors with new ones."
+  },
+  {
+    "id": 56,
+    "topic": "Technology",
+    "word": "Retrieve",
+    "phonetic": "/rɪˈtriːv/",
+    "definition": "To find and bring back information from a computer's memory.",
+    "example": "The technician managed to retrieve the data from the damaged disk."
+  },
+  {
+    "id": 57,
+    "topic": "Technology",
+    "word": "Search",
+    "phonetic": "/sɜːtʃ/",
+    "definition": "To look for information on a computer or on the internet.",
+    "example": "You can search for the document by typing its name in the box."
+  },
+  {
+    "id": 58,
+    "topic": "Technology",
+    "word": "Shut down",
+    "phonetic": "/ˈʃʌt daʊn/",
+    "definition": "To stop a machine or computer from working by turning it off.",
+    "example": "Please remember to shut down your computer before you leave."
+  },
+  {
+    "id": 59,
+    "topic": "Technology",
+    "word": "Technical",
+    "phonetic": "/ˈteknɪkl/",
+    "definition": "Relating to the practical use of machines, or science in industry.",
+    "example": "If you have any technical problems, please call the help desk."
+  },
+  {
+    "id": 60,
+    "topic": "Technology",
+    "word": "Update",
+    "phonetic": "/ˌʌpˈdeɪt/",
+    "definition": "To make something more modern by adding new information or features.",
+    "example": "It is important to update your software regularly for security."
+  }
+]

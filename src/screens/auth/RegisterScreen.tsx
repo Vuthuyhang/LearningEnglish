@@ -7,7 +7,7 @@ import {
 import { Colors } from '../../common/constants/Colors';
 import { useAuthStore } from '../../features/auth/auth.store';
 import { AuthService } from '../../features/auth/auth.service';
-import { AUTH_ROUTES } from '../../configs/routes/main.route';
+import { AUTH_ROUTES } from '../../configs/enums/main-route.enum';
 
 const { width } = Dimensions.get('window');
 
@@ -17,11 +17,10 @@ const RegisterScreen = ({ navigation }: any) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  // Lấy các hàm từ Zustand store
+
   const { setUser, isLoading, setLoading } = useAuthStore();
 
   const handleRegister = async () => {
-    //kiểm tra mk nhập vào
     if (!fullName || !email || !password || !confirmPassword) {
       return Alert.alert("Vui lòng điền đầy đủ thông tin");
     }
@@ -54,7 +53,6 @@ const RegisterScreen = ({ navigation }: any) => {
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.card}>
-          <Text style={styles.title}>Join Us</Text>
           
           <TextInput
             style={styles.input}
@@ -100,7 +98,7 @@ const RegisterScreen = ({ navigation }: any) => {
             {isLoading ? (
               <ActivityIndicator color={Colors.text} />
             ) : (
-              <Text style={styles.buttonText}>Đăng Ký Tài Khoản</Text>
+              <Text style={styles.buttonText}>Đăng Ký</Text>
             )}
           </TouchableOpacity>
 

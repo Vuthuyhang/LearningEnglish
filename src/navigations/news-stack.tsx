@@ -1,6 +1,6 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NEWS_ROUTES } from '../configs/routes/main.route';
+import { NEWS_ROUTES } from '../configs/enums/main-route.enum';
 import NewsFeedScreen from '../screens/news/NewsFeedScreen';
 import ReadingScreen from '../screens/news/ReadingScreen';
 

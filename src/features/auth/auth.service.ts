@@ -2,22 +2,17 @@
 import { firebaseAuth, firebaseFirestore } from '../../services/firebase';
 
 export const AuthService = {
-  // Đăng ký tài khoản mới
   register: async (fullName: string, email: string, pass: string) => {
     try {
-      // BƯỚC 1: Tạo tài khoản trong hệ thống Authentication
       const result = await firebaseAuth.createUserWithEmailAndPassword(email, pass);
       const uid = result.user.uid;
 
-      // BƯỚC 2: Cập nhật Profile cơ bản (displayName)
       await result.user.updateProfile({ displayName: fullName });
 
-      // BƯỚC 3: Lưu thông tin chi tiết vào Firestore
-      // Chúng ta dùng UID làm ID của Document luôn để sau này dễ tìm
       await firebaseFirestore.collection('users').doc(uid).set({
         fullName: fullName,
         email: email,
-        level: 'Beginner', // Mặc định khi mới đăng ký
+        level: 'Beginner', 
         totalWordsLearned: 0,
         createdAt: new Date().getTime(),
       });
@@ -28,7 +23,6 @@ export const AuthService = {
     }
   },
 
-  // Đăng nhập
   login: async (email: string, pass: string) => {
     try {
       const result = await firebaseAuth.signInWithEmailAndPassword(email, pass);
@@ -37,7 +31,7 @@ export const AuthService = {
       throw error.code;
     }
   },
-  //Quên mật khẩu
+
   forgotpassword: async (email: string) => {
     try {
       await firebaseAuth.sendPasswordResetEmail(email);
@@ -46,8 +40,26 @@ export const AuthService = {
     }
   },
 
-  // Đăng xuất
   logout: async () => {
     await firebaseAuth.signOut();
+  },
+
+   updateProfile: async (uid: string, fullName: string, photoURL?: string) => {
+    try {
+      // 1. Cập nhật trên Firebase Authentication (Thông tin đăng nhập)
+      const updateData: { displayName: string; photoURL?: string } = { displayName: fullName };
+      if (photoURL) updateData.photoURL = photoURL;
+      await firebaseAuth.currentUser?.updateProfile(updateData);
+
+      // 2. Cập nhật trên Cloud Firestore (Hồ sơ lưu trữ)
+      await firebaseFirestore.collection('users').doc(uid).update({
+        fullName: fullName,
+        ...(photoURL && { photoURL: photoURL })
+      });
+      
+      return true;
+    } catch (error) {
+      throw error;
+    }
   }
 };

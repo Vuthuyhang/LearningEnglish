@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { Colors } from '../../common/constants/Colors';
 import { useNewsStore } from '../../features/news/news.store';
-import { NEWS_ROUTES } from '../../configs/routes/main.route';
+import { NEWS_ROUTES } from '../../configs/enums/main-route.enum';
 
 const NewsFeedScreen = ({ navigation }: any) => {
   const { articles, isLoading, fetchNews, error } = useNewsStore();

@@ -7,19 +7,24 @@ interface NewsState {
   isLoading: boolean;
   error: string | null;
   fetchNews: () => Promise<void>;
+  getTopArticles: (count: number) => NewsArticle[];
 }
 
-export const useNewsStore = create<NewsState>((set) => ({
+export const useNewsStore = create<NewsState>((set, get) => ({
   articles: [],
   isLoading: false,
   error: null,
   fetchNews: async () => {
-    set({ isLoading: true, error: null });
+    if (get().articles.length === 0) set({ isLoading: true });
+    
     try {
-      const data = await NewsService.getTopHeadlines();
-      set({ articles: data.articles, isLoading: false });
+      const response = await NewsService.getTopHeadlines();
+      set({ articles: response.articles, isLoading: false, error: null });
     } catch (err) {
-      set({ error: 'Không thể tải', isLoading: false });
+      set({ error: 'Không thể tải tin tức', isLoading: false });
     }
   },
+  getTopArticles: (count: number) => {
+    return get().articles.slice(0, count);
+  }
 }));

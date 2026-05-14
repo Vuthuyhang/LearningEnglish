@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { Colors } from '../../common/constants/Colors';
 import { useAuthStore } from '../../features/auth/auth.store';
-import { AUTH_ROUTES } from '../../configs/routes/main.route';
+import { AUTH_ROUTES } from '../../configs/enums/main-route.enum';
 import { Alert } from 'react-native';
 import { ActivityIndicator } from 'react-native';
 import { AuthService } from '../../features/auth/auth.service';
@@ -55,11 +55,8 @@ const ForgotPasswordScreen = ({navigation} : any) => {
     return (
         <View style={styles.container}>
             <View style={styles.card}>
-                <Text style={styles.title}>Quên mật khẩu?</Text>
-                <Text style={styles.description}>
-                    Nhập email bạn đã đăng ký, chúng tôi sẽ gửi liên kết để tạo lại mật khẩu mới.
-                </Text>
-
+                <Text style={styles.title}>Quên mật khẩu</Text>
+                
                 <TextInput
                     style={styles.input}
                     placeholder="Nhập email của bạn"
@@ -78,7 +75,7 @@ const ForgotPasswordScreen = ({navigation} : any) => {
                     {isLoading ? (
                         <ActivityIndicator color={Colors.white} />
                     ) : (
-                        <Text style={styles.buttonText}>Gửi yêu cầu</Text>
+                        <Text style={styles.buttonText}>Gửi</Text>
                     )}
                 </TouchableOpacity>
 

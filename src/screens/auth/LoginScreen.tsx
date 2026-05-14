@@ -2,26 +2,23 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { Colors } from '../../common/constants/Colors';
 import { useAuthStore } from '../../features/auth/auth.store';
-import { AUTH_ROUTES } from '../../configs/routes/main.route';
+import { AUTH_ROUTES } from '../../configs/enums/main-route.enum';
 import { Alert } from 'react-native';
 import { ActivityIndicator } from 'react-native';
-import { AuthService } from '../../features/auth/auth.service';
 const { width } = Dimensions.get('window');
 
 const LoginScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const {setUser, isLoading, setLoading} = useAuthStore();
+  const { login, isLoading } = useAuthStore();
 
   const handleLogin = async () => {
     if (!email || !password) return Alert.alert("Lỗi", "Vui lòng nhập đủ thông tin");
     
-    setLoading(true);
     try {
-      const user = await AuthService.login(email, password);
-      setUser(user); // Tự động chuyển hướng sang NewsFeed nhờ AppNavigator
+      await login(email, password);
+    
     } catch (errorCode) {
-      setLoading(false);
       let msg = "Đã có lỗi xảy ra";
       if (errorCode === 'auth/user-not-found') msg = "Tài khoản không tồn tại";
       if (errorCode === 'auth/wrong-password') msg = "Sai mật khẩu";
@@ -36,6 +33,7 @@ const LoginScreen = ({ navigation }: any) => {
         <TextInput
           style={styles.input}
           placeholder="Email của bạn"
+          placeholderTextColor="#999"
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
@@ -44,6 +42,7 @@ const LoginScreen = ({ navigation }: any) => {
         <TextInput
           style={styles.input}
           placeholder="Mật khẩu"
+          placeholderTextColor="#999"
           value={password}
           onChangeText={setPassword}
           secureTextEntry

@@ -11,5 +11,6 @@ export interface AuthState {
   isLoading: boolean;
   setLoading: (val: boolean) => void;
   setUser: (user: any) => void; 
+  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
 }

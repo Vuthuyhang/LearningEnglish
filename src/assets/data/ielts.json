@@ -1,0 +1,322 @@
+[
+  {
+    "id": 61,
+    "topic": "Environment",
+    "word": "Biodiversity",
+    "phonetic": "/ˌbaɪəʊdaɪˈvɜːsəti/",
+    "definition": "The variety of plant and animal life in a particular habitat.",
+    "example": "The new law aims to protect the biodiversity of the Amazon rainforest."
+  },
+  {
+    "id": 62,
+    "topic": "Environment",
+    "word": "Contaminate",
+    "phonetic": "/kənˈtæmɪneɪt/",
+    "definition": "To make something poisonous or less pure by adding something harmful.",
+    "example": "Industrial waste continues to contaminate the local water supply."
+  },
+  {
+    "id": 63,
+    "topic": "Environment",
+    "word": "Sustainability",
+    "phonetic": "/səˌsteɪnəˈbɪləti/",
+    "definition": "The quality of being able to continue over a long period of time without harming the environment.",
+    "example": "The government is promoting sustainability in the agricultural sector."
+  },
+  {
+    "id": 64,
+    "topic": "Environment",
+    "word": "Depletion",
+    "phonetic": "/dɪˈpliːʃn/",
+    "definition": "A reduction in something, or the act of reducing something, such as natural resources.",
+    "example": "The depletion of the ozone layer is a major global concern."
+  },
+  {
+    "id": 65,
+    "topic": "Environment",
+    "word": "Ecosystem",
+    "phonetic": "/ˈiːkəʊsɪstəm/",
+    "definition": "All the living things in an area and the way they affect each other and the environment.",
+    "example": "Pollution can have a devastating effect on the marine ecosystem."
+  },
+  {
+    "id": 66,
+    "topic": "Environment",
+    "word": "Emissions",
+    "phonetic": "/iˈmɪʃnz/",
+    "definition": "The production and discharge of something, especially gas or radiation.",
+    "example": "Carbon dioxide emissions from cars are a primary cause of global warming."
+  },
+  {
+    "id": 67,
+    "topic": "Environment",
+    "word": "Endangered",
+    "phonetic": "/ɪnˈdeɪndʒəd/",
+    "definition": "Animals or plants that may soon not exist because there are very few now alive.",
+    "example": "The giant panda is one of the most famous endangered species in the world."
+  },
+  {
+    "id": 68,
+    "topic": "Environment",
+    "word": "Erosion",
+    "phonetic": "/ɪˈrəʊʒn/",
+    "definition": "The gradual destruction of tissue or soil by natural forces like wind or water.",
+    "example": "Coastal erosion has increased significantly due to rising sea levels."
+  },
+  {
+    "id": 69,
+    "topic": "Environment",
+    "word": "Habitat",
+    "phonetic": "/ˈhæbɪtæt/",
+    "definition": "The natural environment in which an animal or plant usually lives.",
+    "example": "Deforestation is destroying the natural habitat of many wild animals."
+  },
+  {
+    "id": 70,
+    "topic": "Environment",
+    "word": "Inevitably",
+    "phonetic": "/ɪnˈevɪtəbli/",
+    "definition": "In a way that cannot be avoided.",
+    "example": "If we do not act now, global temperatures will inevitably rise."
+  },
+  {
+    "id": 71,
+    "topic": "Environment",
+    "word": "Mitigate",
+    "phonetic": "/ˈmɪtɪɡeɪt/",
+    "definition": "To make something less harmful, unpleasant, or bad.",
+    "example": "Planting more trees is a simple way to mitigate the effects of climate change."
+  },
+  {
+    "id": 72,
+    "topic": "Environment",
+    "word": "Renewable",
+    "phonetic": "/rɪˈnjuːəbl/",
+    "definition": "Energy from a source that is not depleted when used, such as wind or solar power.",
+    "example": "The country is shifting its focus toward renewable energy sources."
+  },
+  {
+    "id": 73,
+    "topic": "Environment",
+    "word": "Conservation",
+    "phonetic": "/ˌkɒnsəˈveɪʃn/",
+    "definition": "The protection of plants and animals, natural areas, or important structures.",
+    "example": "Wildlife conservation is essential for maintaining a healthy planet."
+  },
+  {
+    "id": 74,
+    "topic": "Environment",
+    "word": "Deforestation",
+    "phonetic": "/ˌdiːˌfɒrɪˈsteɪʃn/",
+    "definition": "The cutting down of trees in a large area; the destruction of forests by people.",
+    "example": "Deforestation contributes to about 15 percent of all greenhouse gas emissions."
+  },
+  {
+    "id": 75,
+    "topic": "Environment",
+    "word": "Pollutant",
+    "phonetic": "/pəˈluːtənt/",
+    "definition": "A substance that pollutes something, especially water or the atmosphere.",
+    "example": "Nitrogen oxide is a common air pollutant produced by jet engines."
+  },
+  {
+    "id": 76,
+    "topic": "Environment",
+    "word": "Disposable",
+    "phonetic": "/dɪˈspəʊzəbl/",
+    "definition": "An item that is intended to be thrown away after use.",
+    "example": "We should reduce our use of disposable plastic bottles to save the oceans."
+  },
+  {
+    "id": 77,
+    "topic": "Environment",
+    "word": "Pesticide",
+    "phonetic": "/ˈpestɪsaɪd/",
+    "definition": "A chemical substance used to kill harmful insects or plants.",
+    "example": "The use of chemical pesticides can harm birds and beneficial insects."
+  },
+  {
+    "id": 78,
+    "topic": "Environment",
+    "word": "Catastrophe",
+    "phonetic": "/kəˈtæstrəfi/",
+    "definition": "A sudden event that causes very great trouble or destruction.",
+    "example": "Scientists warn that an environmental catastrophe is possible if carbon levels don't drop."
+  },
+  {
+    "id": 79,
+    "topic": "Environment",
+    "word": "Urbanization",
+    "phonetic": "/ˌɜːbənaɪˈzeɪʃn/",
+    "definition": "The process by which more and more people leave the countryside to live in cities.",
+    "example": "Rapid urbanization often leads to the loss of green spaces in a city."
+  },
+  {
+    "id": 80,
+    "topic": "Environment",
+    "word": "Pristine",
+    "phonetic": "/ˈprɪstiːn/",
+    "definition": "New or almost new, and in very good condition; unspoiled.",
+    "example": "The island is famous for its pristine beaches and crystal clear water."
+  },
+  {
+    "id": 81,
+    "topic": "Education",
+    "word": "Academic",
+    "phonetic": "/ˌækəˈdemɪk/",
+    "definition": "Relating to schools, colleges, and universities, or connected with studying and thinking.",
+    "example": "The university provides a wide range of academic courses for international students."
+  },
+  {
+    "id": 82,
+    "topic": "Education",
+    "word": "Curriculum",
+    "phonetic": "/kəˈrɪkjələm/",
+    "definition": "The group of subjects studied in a school, college, or university.",
+    "example": "The school is adding coding and robotics to its primary curriculum."
+  },
+  {
+    "id": 83,
+    "topic": "Education",
+    "word": "Discipline",
+    "phonetic": "/ˈdɪsəplɪn/",
+    "definition": "The practice of making people obey rules or standards of behavior.",
+    "example": "A lack of discipline in the classroom can hinder the learning process."
+  },
+  {
+    "id": 84,
+    "topic": "Education",
+    "word": "Enroll",
+    "phonetic": "/ɪnˈrəʊl/",
+    "definition": "To officially join a class, school, or course.",
+    "example": "Thousands of students enroll in online courses every year to gain new skills."
+  },
+  {
+    "id": 85,
+    "topic": "Education",
+    "word": "Literacy",
+    "phonetic": "/ˈlɪtərəsi/",
+    "definition": "The ability to read and write.",
+    "example": "The government is launching a campaign to improve adult literacy rates."
+  },
+  {
+    "id": 86,
+    "topic": "Education",
+    "word": "Pedagogy",
+    "phonetic": "/ˈpedəɡɒdʒi/",
+    "definition": "The methods and theory of teaching.",
+    "example": "Modern pedagogy focuses more on student participation than traditional lectures."
+  },
+  {
+    "id": 87,
+    "topic": "Education",
+    "word": "Qualification",
+    "phonetic": "/ˌkwɒlɪfɪˈkeɪʃn/",
+    "definition": "An official record showing that you have finished a training course or have the necessary skills.",
+    "example": "You will need a teaching qualification to apply for a position at this college."
+  },
+  {
+    "id": 88,
+    "topic": "Education",
+    "word": "Scholarship",
+    "phonetic": "/ˈskɒləʃɪp/",
+    "definition": "An amount of money given by a school or organization to pay for a student's education.",
+    "example": "She was awarded a full scholarship to study medicine at Oxford."
+  },
+  {
+    "id": 89,
+    "topic": "Education",
+    "word": "Tertiary",
+    "phonetic": "/ˈtɜːʃəri/",
+    "definition": "Relating to education at a college or university level.",
+    "example": "Access to tertiary education is essential for a country's economic development."
+  },
+  {
+    "id": 90,
+    "topic": "Education",
+    "word": "Tuition",
+    "phonetic": "/tjuˈɪʃn/",
+    "definition": "The money paid for being taught, usually at a college or university.",
+    "example": "Many students take out loans to cover the cost of their university tuition."
+  },
+  {
+    "id": 91,
+    "topic": "Education",
+    "word": "Vocational",
+    "phonetic": "/vəʊˈkeɪʃənl/",
+    "definition": "Providing skills and education that prepare you for a specific job.",
+    "example": "The college offers vocational training in carpentry and electrical work."
+  },
+  {
+    "id": 92,
+    "topic": "Education",
+    "word": "Collaborative",
+    "phonetic": "/kəˈlæbərətɪv/",
+    "definition": "Involving two or more people working together for a special purpose.",
+    "example": "Collaborative learning helps students develop important social and teamwork skills."
+  },
+  {
+    "id": 93,
+    "topic": "Education",
+    "word": "Distance learning",
+    "phonetic": "/ˈdɪstəns ˈlɜːnɪŋ/",
+    "definition": "A way of studying where you do not attend a school but study at home using the internet.",
+    "example": "Distance learning is a flexible option for people who work full-time."
+  },
+  {
+    "id": 94,
+    "topic": "Education",
+    "word": "Comprehensive",
+    "phonetic": "/ˌkɒmprɪˈhensɪv/",
+    "definition": "Complete and including everything that is necessary.",
+    "example": "The course provides a comprehensive overview of 20th-century history."
+  },
+  {
+    "id": 95,
+    "topic": "Education",
+    "word": "Assessment",
+    "phonetic": "/əˈsesmənt/",
+    "definition": "The act of judging or deciding the amount, value, quality, or importance of something.",
+    "example": "Continuous assessment is often better than a single final exam."
+  },
+  {
+    "id": 96,
+    "topic": "Education",
+    "word": "Mandatory",
+    "phonetic": "/ˈmændətəri/",
+    "definition": "Something that must be done, or is demanded by law.",
+    "example": "In many countries, primary education is mandatory for all children."
+  },
+  {
+    "id": 97,
+    "topic": "Education",
+    "word": "Analytical",
+    "phonetic": "/ˌænəˈlɪtɪkl/",
+    "definition": "Using a logical method of thinking about something in order to understand it.",
+    "example": "University students are expected to develop strong analytical skills."
+  },
+  {
+    "id": 98,
+    "topic": "Education",
+    "word": "Cognitive",
+    "phonetic": "/ˈkɒɡnətɪv/",
+    "definition": "Connected with thinking or conscious mental processes.",
+    "example": "Puzzles and reading can help improve a child's cognitive development."
+  },
+  {
+    "id": 99,
+    "topic": "Education",
+    "word": "Assignment",
+    "phonetic": "/əˈsaɪnmənt/",
+    "definition": "A piece of work given to someone, typically as part of their studies.",
+    "example": "The students were given a two-week deadline to complete their research assignment."
+  },
+  {
+    "id": 100,
+    "topic": "Education",
+    "word": "Thesis",
+    "phonetic": "/ˈθiːsɪs/",
+    "definition": "A long piece of writing on a particular subject, especially one that is done for a higher university degree.",
+    "example": "He is currently writing his doctoral thesis on renewable energy policy."
+  }
+]
