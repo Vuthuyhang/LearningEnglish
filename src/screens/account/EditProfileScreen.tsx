@@ -28,7 +28,7 @@ const EditProfileScreen = ({ navigation }: any) => {
   };
 
   const handleSave = async () => {
-    if (!fullName.trim()) return Alert.alert("Lỗi 🌸", "Họ tên không được để trống.");
+    if (!fullName.trim()) return Alert.alert("Lỗi", "Họ tên không được để trống.");
 
     setLoading(true);
     try {
@@ -39,7 +39,7 @@ const EditProfileScreen = ({ navigation }: any) => {
 
       Toast.show({
         type: 'success',
-        text1: 'Thành công ✨',
+        text1: 'Thành công',
         text2: 'Thông tin của bạn đã được cập nhật'
       });
       navigation.goBack();
@@ -53,13 +53,13 @@ const EditProfileScreen = ({ navigation }: any) => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <Ionicons name="chevron-back" size={28} color="#4A4A4A" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Chỉnh sửa hồ sơ</Text>
         <View style={{ width: 40 }} />
-      </View>
+      </View> */}
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Avatar Section */}
@@ -73,7 +73,7 @@ const EditProfileScreen = ({ navigation }: any) => {
               <Ionicons name="camera" size={20} color="white" />
             </TouchableOpacity>
           </View>
-          <Text style={styles.changeText}>Chạm để đổi ảnh 🌸</Text>
+          <Text style={styles.changeText}>Chạm để đổi ảnh</Text>
         </View>
 
         {/* Input Section */}

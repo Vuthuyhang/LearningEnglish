@@ -1,10 +1,21 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Colors } from '../../common/constants/Colors';
 import { REVIEW_ROUTES } from '../../configs/enums/main-route.enum';
+import { useReviewStore } from '../../features/review/review.store';
+import { useAuthStore } from '../../features/auth/auth.store';
 
 const ReviewMenuScreen = ({ navigation }: any) => {
+  const { user } = useAuthStore();
+const { highScores, fetchHighScores } = useReviewStore();
+
+  useEffect(() => {
+    if (user?.uid) {
+      fetchHighScores(user.uid);
+    }
+  }, [user?.uid, fetchHighScores]);
+
   const games = [
     {
       id: 'match',
@@ -20,7 +31,7 @@ const ReviewMenuScreen = ({ navigation }: any) => {
       score: '1,200',
       icon: 'shuffle',
       color: '#C2E9FB',
-      route: null,
+      route: REVIEW_ROUTES.GAME_SCRAMBLE,
     },
     {
       id: 'quiz',
@@ -34,7 +45,7 @@ const ReviewMenuScreen = ({ navigation }: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.headerTitle}>Trò chơi học tập</Text>
+      <Text style={styles.headerTitle}> </Text>
       <ScrollView contentContainerStyle={styles.scrollPadding}>
         {games.map((game) => (
           <View key={game.id} style={styles.gameCard}>
@@ -46,7 +57,9 @@ const ReviewMenuScreen = ({ navigation }: any) => {
             {/* Thông tin ở giữa */}
             <View style={styles.infoContainer}>
               <Text style={styles.gameTitle}>{game.title}</Text>
-              <Text style={styles.highScore}>High-score: {game.score}</Text>
+              <Text style={styles.highScore}>
+                High-score: {(highScores[game.id] || 0).toLocaleString()}
+              </Text>
               <View style={styles.badgeRow}>
                  <View style={styles.coinBadge}><Text style={styles.badgeText}>H</Text></View>
                  <Text style={styles.pointsText}>25</Text>

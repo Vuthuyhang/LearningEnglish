@@ -43,14 +43,14 @@ const ProfileScreen = ({ navigation }: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header cố định ở trên */}
+      {/* Header cố định ở trên
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back" size={28} color="#4A4A4A" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Hồ sơ cá nhân</Text>
         <View style={{ width: 28 }} />
-      </View>
+      </View> */}
 
       {/* DÙNG SCROLLVIEW ĐỂ CÓ THỂ CUỘN XUỐNG THẤY NÚT */}
       <ScrollView 

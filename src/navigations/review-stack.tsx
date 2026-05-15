@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { REVIEW_ROUTES } from '../configs/enums/main-route.enum';
 import ReviewMenuScreen from '../screens/review/ReviewMenuScreen';
 import WordMatchGame from '../screens/review/WordMatchGame';
+import WordScrambleGame from '../screens/review/WordScrambleGame';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,6 +15,7 @@ export const ReviewStack = () => {
       <Stack.Screen name={REVIEW_ROUTES.REVIEW_TOEIC} component={ReviewToeicScreen} />
       <Stack.Screen name={REVIEW_ROUTES.REVIEW_IELTS} component={ReviewIeltsScreen} /> */}
       <Stack.Screen name={REVIEW_ROUTES.GAME_MATCH} component={WordMatchGame} />
+      <Stack.Screen name={REVIEW_ROUTES.GAME_SCRAMBLE} component={WordScrambleGame} />
 
     </Stack.Navigator>
   );

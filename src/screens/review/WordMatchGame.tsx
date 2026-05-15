@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, Alert, 
-  SafeAreaView, ScrollView, Dimensions, ActivityIndicator, Modal
+  View, Text, StyleSheet, TouchableOpacity,
+  SafeAreaView, ScrollView, Dimensions, Modal, Animated
 } from 'react-native';
 import Sound from 'react-native-sound';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -9,134 +9,313 @@ import { Colors } from '../../common/constants/Colors';
 import { useVocabularyStore } from '../../features/vocabulary/vocab.store';
 import toeicData from '../../assets/data/toeic.json';
 import ieltsData from '../../assets/data/ielts.json';
+import { LinearGradient } from 'react-native-linear-gradient';
+import { useReviewStore } from '../../features/review/review.store';
+import { useAuthStore } from '../../features/auth/auth.store';
 
-const { width, height } = Dimensions.get('window');
-const GAME_TIME = 30; 
+const { width } = Dimensions.get('window');
+const ROUND_TIME  = 45;
+const MAX_LIVES   = 3;
+const PAIRS_COUNT = 5;
+const POINTS_WIN  = 50;
 
 Sound.setCategory('Playback');
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+const fisherYatesShuffle = <T,>(arr: T[]): T[] => {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+};
+
+const buildPool = (vocabList: any[]) => fisherYatesShuffle([
+  ...vocabList.map(i => ({ ...i, source: 'Personal' })),
+  ...(toeicData as any[]).map(i => ({ ...i, source: 'TOEIC' })),
+  ...(ieltsData as any[]).map(i => ({ ...i, source: 'IELTS' })),
+]);
+
+const pickPairs = (pool: any[], usedCount: number) => {
+  const start = usedCount % pool.length;
+  const slice = [];
+  for (let i = 0; i < PAIRS_COUNT; i++) {
+    slice.push(pool[(start + i) % pool.length]);
+  }
+  return slice;
+};
+
+// ─── Component ────────────────────────────────────────────────────────────────
 const WordMatchGame = ({ navigation }: any) => {
   const { vocabList } = useVocabularyStore();
-  
-  // States quản lý trạng thái Game
-  const [isGameStarted, setIsGameStarted] = useState(false); // Trạng thái bắt đầu
-  const [gamePairs, setGamePairs] = useState<any[]>([]); 
-  const [shuffledDefs, setShuffledDefs] = useState<any[]>([]); 
-  const [selectedWord, setSelectedWord] = useState<any>(null);
-  const [selectedDef, setSelectedDef] = useState<any>(null);
+  const { user } = useAuthStore();
+  const { updateHighScore } = useReviewStore();
+
+  // ── Game meta ────────────────────────────────────────────────
+  const [isGameStarted, setIsGameStarted]     = useState(false);
+  const [isGameOver, setIsGameOver]           = useState(false);
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [score, setScore]                     = useState(0);
+  const [roundsWon, setRoundsWon]             = useState(0);
+
+  const scoreRef = useRef(0);
+
+  // FIX vấn đề 2: Dùng ref song song với isGameOver và isGameStarted
+  // để listener beforeRemove đọc giá trị đúng mà không cần re-register
+  const isGameOverRef    = useRef(false);
+  const isGameStartedRef = useRef(false);
+
+  // ── Round state ──────────────────────────────────────────────
+  const poolRef       = useRef<any[]>([]);
+  const usedCountRef  = useRef(0);
+  const [gamePairs,    setGamePairs]    = useState<any[]>([]);
+  const [shuffledDefs, setShuffledDefs] = useState<any[]>([]);
   const [matchedWords, setMatchedWords] = useState<string[]>([]);
-  const [wrongPair, setWrongPair] = useState<string[]>([]);
-  const [timeLeft, setTimeLeft] = useState(GAME_TIME);
-  const [isGameOver, setIsGameOver] = useState(false);
+  const [selectedWord, setSelectedWord] = useState<any>(null);
+  const [selectedDef,  setSelectedDef]  = useState<any>(null);
+  const [wrongPair,    setWrongPair]    = useState<string[]>([]);
+  const [lives,        setLives]        = useState(MAX_LIVES);
+  const [timeLeft,     setTimeLeft]     = useState(ROUND_TIME);
+  const [isRoundOver,  setIsRoundOver]  = useState(false);
 
-  // Refs âm thanh
-  const bgMusic = useRef<Sound | null>(null);
-  const sfxCorrect = useRef(new Sound('correct.mp3', Sound.MAIN_BUNDLE));
-  const sfxWrong = useRef(new Sound('wrong.mp3', Sound.MAIN_BUNDLE));
-  const sfxFail = useRef(new Sound('fail2.mp3', Sound.MAIN_BUNDLE));
-  const sfxWin = useRef(new Sound('completed.mp3', Sound.MAIN_BUNDLE));
+  const [showExitModal, setShowExitModal] = useState(false);
+  const [pendingAction, setPendingAction] = useState<any>(null);
+  const [isPaused,      setIsPaused]      = useState(false);
 
-  // 1. Chuẩn bị dữ liệu khi vào màn hình
+  const isRoundOverRef = useRef(false);
+  const livesRef       = useRef(MAX_LIVES);
+
+  // ── Transition overlay ───────────────────────────────────────
+  const [showRoundWin, setShowRoundWin] = useState(false);
+  const overlayOpacity = useRef(new Animated.Value(0)).current;
+  const shakeAnim      = useRef(new Animated.Value(0)).current;
+
+  // ── Sound ────────────────────────────────────────────────────
+  const bgMusic    = useRef<Sound | null>(null);
+  const sfxCorrect = useRef<Sound | null>(null);
+  const sfxWrong   = useRef<Sound | null>(null);
+  const sfxFail    = useRef<Sound | null>(null);
+  const sfxWin     = useRef<Sound | null>(null);
+
+  const loadSound = (filename: string): Sound => {
+    return new Sound(filename, Sound.MAIN_BUNDLE, (err) => {
+      if (err) console.warn(`Failed to load sound: ${filename}`, err);
+    });
+  };
+
+  const playSfx = (sfx: React.MutableRefObject<Sound | null>) => {
+    sfx.current?.stop();
+    sfx.current?.play();
+  };
+
+  // ── Khởi tạo ─────────────────────────────────────────────────
   useEffect(() => {
-    const allAvailable = [
-      ...vocabList.map(i => ({ ...i, source: 'Personal' })),
-      ...(toeicData as any[]).map(i => ({ ...i, source: 'TOEIC' })),
-      ...(ieltsData as any[]).map(i => ({ ...i, source: 'IELTS' })),
-    ];
+    poolRef.current = buildPool(vocabList);
+    sfxCorrect.current = loadSound('correct.mp3');
+    sfxWrong.current   = loadSound('wrong.mp3');
+    sfxFail.current    = loadSound('fail2.mp3');
+    sfxWin.current     = loadSound('completed.mp3');
+    loadRound();
 
-    if (allAvailable.length < 5) {
-      Alert.alert("Opps! 🌸", "Cần ít nhất 5 từ vựng để chơi. Hãy lưu thêm từ nhé!");
-      navigation.goBack();
-      return;
-    }
-
-    const selected = allAvailable.sort(() => 0.5 - Math.random()).slice(0, 6);
-    setGamePairs(selected);
-    setShuffledDefs([...selected].sort(() => 0.5 - Math.random()));
-
-    // Cleanup khi thoát
     return () => {
-      if (bgMusic.current) {
-        bgMusic.current.stop();    // Dừng trước
-        bgMusic.current.release(); // Giải phóng sau, không viết dính vào nhau
-     }
-      sfxCorrect.current.release();
-      sfxWrong.current.release();
-      sfxFail.current.release();
-      sfxWin.current.release();
+      bgMusic.current?.stop();
+      bgMusic.current?.release();
+      sfxCorrect.current?.release();
+      sfxWrong.current?.release();
+      sfxFail.current?.release();
+      sfxWin.current?.release();
     };
   }, []);
 
-  // 2. Logic bắt đầu Game (Khi bấm nút Start)
+  // ── Load vòng mới ─────────────────────────────────────────────
+  const loadRound = useCallback(() => {
+    const pairs = pickPairs(poolRef.current, usedCountRef.current);
+    usedCountRef.current += PAIRS_COUNT;
+    isRoundOverRef.current = false;
+    setGamePairs(pairs);
+    setShuffledDefs(fisherYatesShuffle(pairs));
+    setMatchedWords([]);
+    setSelectedWord(null);
+    setSelectedDef(null);
+    setWrongPair([]);
+    livesRef.current = MAX_LIVES;
+    setLives(MAX_LIVES);
+    setTimeLeft(ROUND_TIME);
+    setIsRoundOver(false);
+    setShowRoundWin(false);
+  }, []);
+
+  // ── Bắt đầu game ─────────────────────────────────────────────
   const startGame = () => {
     setIsGameStarted(true);
-    // Chỉ phát nhạc sau khi nhấn Start
-    bgMusic.current = new Sound('playing.mp3', Sound.MAIN_BUNDLE, (error) => {
-      if (!error) {
+    isGameStartedRef.current = true; // FIX vấn đề 2: cập nhật ref
+    bgMusic.current = new Sound('playing.mp3', Sound.MAIN_BUNDLE, (err) => {
+      if (!err) {
         bgMusic.current?.setNumberOfLoops(-1);
         bgMusic.current?.setVolume(0.3);
         bgMusic.current?.play();
+      } else {
+        console.warn('Failed to load background music', err);
       }
     });
   };
 
-  // 3. Bộ đếm thời gian (Chỉ chạy khi đã Start)
+  // ── Timer mỗi vòng ───────────────────────────────────────────
   useEffect(() => {
-    let timer: ReturnType<typeof setInterval>;
-    if (isGameStarted && timeLeft > 0 && !isGameOver && matchedWords.length < gamePairs.length) {
-      timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
-    } else if (isGameStarted && timeLeft === 0 && !isGameOver) {
-      bgMusic.current?.stop();
-      sfxFail.current.play();
-      handleEndGame(false);
+    if (!isGameStarted || isRoundOverRef.current || showRoundWin || isPaused) return;
+    if (timeLeft === 0) {
+      triggerShake();
+      endRound(false, 'time');
+      return;
     }
-    return () => clearInterval(timer);
-  }, [isGameStarted, timeLeft, isGameOver, matchedWords.length]);
+    const t = setInterval(() => setTimeLeft(p => p - 1), 1000);
+    return () => clearInterval(t);
+  }, [isGameStarted, timeLeft, showRoundWin, isPaused]);
 
-  // 4. Kiểm tra nối từ
+  // ── Kiểm tra nối từ ──────────────────────────────────────────
   useEffect(() => {
-    if (selectedWord && selectedDef) {
-      if (selectedWord.word === selectedDef.word) {
-        sfxCorrect.current.play();
-        setMatchedWords(prev => [...prev, selectedWord.word]);
+    if (!selectedWord || !selectedDef) return;
+
+    if (selectedWord.word === selectedDef.word) {
+      playSfx(sfxCorrect);
+      setMatchedWords(prev => {
+        const newMatched = [...prev, selectedWord.word];
+        if (newMatched.length === PAIRS_COUNT) {
+          endRound(true);
+        }
+        return newMatched;
+      });
+      setSelectedWord(null);
+      setSelectedDef(null);
+
+    } else {
+      playSfx(sfxWrong);
+      triggerShake();
+      setWrongPair([selectedWord.word, selectedDef.word]);
+
+      const newLives = livesRef.current - 1;
+      livesRef.current = newLives;
+      setLives(newLives);
+
+      if (newLives === 0) {
+        setTimeout(() => endRound(false, 'lives'), 500);
+      }
+
+      setTimeout(() => {
+        setWrongPair([]);
         setSelectedWord(null);
         setSelectedDef(null);
-        if (matchedWords.length + 1 === gamePairs.length) {
-          bgMusic.current?.stop();
-          sfxWin.current.play();
-          handleEndGame(true);
-        }
-      } else {
-        sfxWrong.current.play();
-        setWrongPair([selectedWord.word, selectedDef.word]);
-        setTimeout(() => {
-          setWrongPair([]);
-          setSelectedWord(null);
-          setSelectedDef(null);
-        }, 500);
-      }
+      }, 500);
     }
   }, [selectedWord, selectedDef]);
 
-  const handleEndGame = (isWin: boolean) => {
-    setIsGameOver(true);
-    Alert.alert(
-      isWin ? "Thắng cuộc! 🎉" : "Hết giờ! ⏰",
-      isWin ? `Tuyệt vời! Bạn còn dư ${timeLeft}s.` : "Thử lại ván khác nhé!",
-      [{ text: "Chơi lại", onPress: () => navigation.replace('WordMatchGame') },
-       { text: "Thoát", onPress: () => navigation.goBack() }]
-    );
+  // ── Shake animation ───────────────────────────────────────────
+  const triggerShake = () => {
+    Animated.sequence([
+      Animated.timing(shakeAnim, { toValue: 8,  duration: 60, useNativeDriver: true }),
+      Animated.timing(shakeAnim, { toValue: -8, duration: 60, useNativeDriver: true }),
+      Animated.timing(shakeAnim, { toValue: 4,  duration: 60, useNativeDriver: true }),
+      Animated.timing(shakeAnim, { toValue: 0,  duration: 60, useNativeDriver: true }),
+    ]).start();
   };
+
+  // ── Kết thúc 1 vòng ──────────────────────────────────────────
+  const endRound = useCallback((isWin: boolean, reason?: string) => {
+    if (isRoundOverRef.current) return;
+    isRoundOverRef.current = true;
+    setIsRoundOver(true);
+
+    if (isWin) {
+      playSfx(sfxWin);
+      const newScore = scoreRef.current + POINTS_WIN;
+      scoreRef.current = newScore;
+      setScore(newScore);
+      setRoundsWon(r => r + 1);
+
+      setShowRoundWin(true);
+      Animated.sequence([
+        Animated.timing(overlayOpacity, { toValue: 1, duration: 300, useNativeDriver: true }),
+        Animated.delay(900),
+        Animated.timing(overlayOpacity, { toValue: 0, duration: 300, useNativeDriver: true }),
+      ]).start(() => {
+        setShowRoundWin(false);
+        loadRound();
+      });
+
+    } else {
+      bgMusic.current?.stop();
+      playSfx(sfxFail);
+      // FIX vấn đề 2: đánh dấu game over qua ref để listener không chặn nữa
+      setIsGameOver(true);
+      isGameOverRef.current = true;
+      if (user?.uid) {
+        updateHighScore(user.uid, 'match', scoreRef.current);
+      }
+      setShowResultModal(true);
+    }
+  }, [loadRound, user, updateHighScore]);
+
+  // ── Xử lý thoát giữa chừng ───────────────────────────────────
+  // FIX vấn đề 2: chỉ phụ thuộc vào navigation, đọc trạng thái qua ref
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', (e: any) => {
+      if (isGameOverRef.current || !isGameStartedRef.current) return;
+
+      e.preventDefault();
+      isRoundOverRef.current = true;
+      setIsPaused(true);       // trigger re-run timer effect → dừng đồng hồ
+      setPendingAction(e.data.action);
+      setShowExitModal(true);
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  const handleConfirmExit = async () => {
+    if (user?.uid) {
+      await updateHighScore(user.uid, 'match', scoreRef.current);
+    }
+    bgMusic.current?.stop();
+    setShowExitModal(false);
+    if (pendingAction) {
+      navigation.dispatch(pendingAction);
+    }
+  };
+
+  const handleCancelExit = () => {
+    setShowExitModal(false);
+    setPendingAction(null);
+    isRoundOverRef.current = false;
+    setIsPaused(false); // trigger re-run timer effect → đồng hồ chạy lại
+  };
+
+  // ── Render mạng ──────────────────────────────────────────────
+  const renderLives = () =>
+    [...Array(MAX_LIVES)].map((_, i) => (
+      <Ionicons
+        key={i}
+        name={i < lives ? 'heart' : 'heart-outline'}
+        size={22}
+        color={i < lives ? '#FF6B6B' : '#DDD'}
+        style={{ marginHorizontal: 2 }}
+      />
+    ));
+
+  // ── Màu timer ────────────────────────────────────────────────
+  const timerColor    = timeLeft <= 10 ? '#FF6B6B' : timeLeft <= 20 ? '#FFA500' : '#4A4A4A';
+  const progressPct   = `${(timeLeft / ROUND_TIME) * 100}%` as any;
+  const progressColor = timeLeft <= 10 ? '#FF6B6B' : timeLeft <= 20 ? '#FFA500' : '#FFD1DC';
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* MÀN HÌNH CHỜ (START SCREEN) */}
+
+      {/* ── START OVERLAY ─────────────────────────────────────── */}
       {!isGameStarted && (
         <View style={styles.overlay}>
           <View style={styles.startCard}>
             <Ionicons name="extension-puzzle" size={80} color={Colors.primary} />
-            <Text style={styles.startTitle}>Sẵn sàng chưa? ✨</Text>
-            <Text style={styles.startSub}>Nối 6 cặp từ trong 60 giây để chiến thắng.</Text>
+            <Text style={styles.startTitle}>Word Match</Text>
             <TouchableOpacity style={styles.startBtn} onPress={startGame}>
               <Text style={styles.startBtnText}>BẮT ĐẦU CHƠI</Text>
             </TouchableOpacity>
@@ -144,35 +323,137 @@ const WordMatchGame = ({ navigation }: any) => {
         </View>
       )}
 
-      {/* HEADER & TIMER */}
-      <View style={styles.headerCard}>
-        <View style={styles.timerRow}>
-          <Ionicons name="alarm-outline" size={24} color={timeLeft < 10 ? '#FF6B6B' : Colors.secondary} />
-          <Text style={[styles.timerText, timeLeft < 10 && { color: '#FF6B6B' }]}>{timeLeft}s</Text>
-        </View>
-        <View style={styles.progressContainer}>
-          <View style={[styles.progressFill, { width: `${(timeLeft / GAME_TIME) * 100}%`, backgroundColor: timeLeft < 10 ? '#FF6B6B' : '#FFD1DC' }]} />
-        </View>
-      </View>
+      {/* ── WIN ROUND FLASH OVERLAY ───────────────────────────── */}
+      {showRoundWin && (
+        <Animated.View style={[styles.winFlash, { opacity: overlayOpacity }]}>
+          <Ionicons name="checkmark-circle" size={80} color="white" />
+          <Text style={styles.winFlashTitle}>Tuyệt vời!</Text>
+          <Text style={styles.winFlashSub}>+{POINTS_WIN} điểm</Text>
+        </Animated.View>
+      )}
 
+      {/* ── MODAL XÁC NHẬN THOÁT ─────────────────────────────── */}
+      <Modal visible={showExitModal} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.exitCard}>
+            <Ionicons name="warning" size={70} color="#FFB7C5" />
+            <Text style={styles.exitTitle}>Bạn muốn dừng chơi? 🌸</Text>
+            <Text style={styles.exitSub}>
+              Điểm số hiện tại ({score}) sẽ vẫn được lưu lại nếu đây là kỷ lục mới của bạn.
+            </Text>
+
+            <View style={styles.exitBtnRow}>
+              {/* FIX vấn đề 1: gọi handleCancelExit thay vì setShowExitModal(false) */}
+              <TouchableOpacity style={styles.cancelBtn} onPress={handleCancelExit}>
+                <Text style={styles.cancelBtnText}>Tiếp tục</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.confirmExitBtn} onPress={handleConfirmExit}>
+                <LinearGradient colors={['#FFDEE9', '#FFB7C5']} style={styles.gradExit}>
+                  <Text style={styles.confirmBtnText}>Thoát</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* ── GAME OVER MODAL ───────────────────────────────────── */}
+      <Modal visible={showResultModal} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.resultCard}>
+            <Ionicons name="skull-outline" size={80} color="#FF6B6B" />
+            <Text style={styles.resultTitle}>Game Over!</Text>
+
+            <View style={styles.scoreBoard}>
+              <View style={styles.scoreStat}>
+                <Text style={styles.scoreStatNum}>{scoreRef.current}</Text>
+                <Text style={styles.scoreStatLabel}>ĐIỂM</Text>
+              </View>
+              <View style={styles.scoreDivider} />
+              <View style={styles.scoreStat}>
+                <Text style={styles.scoreStatNum}>{roundsWon}</Text>
+                <Text style={styles.scoreStatLabel}>VÒNG THẮNG</Text>
+              </View>
+            </View>
+
+            <TouchableOpacity
+              style={styles.resultMainBtn}
+              onPress={() => navigation.replace('WordMatchGame')}
+            >
+              <LinearGradient colors={['#FFDEE9', '#FFB7C5']} style={styles.gradientBtn}>
+                <Text style={styles.resultBtnText}>CHƠI LẠI</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            {/* isGameOver = true nên navigation.goBack() sẽ không bị chặn */}
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Text style={styles.exitText}>Trở về Menu</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* ── HEADER ────────────────────────────────────────────── */}
+      <Animated.View style={[styles.headerCard, { transform: [{ translateX: shakeAnim }] }]}>
+        <View style={styles.statsRow}>
+          <View style={styles.timerBox}>
+            <Ionicons name="alarm-outline" size={20} color={timerColor} />
+            <Text style={[styles.timerText, { color: timerColor }]}>{timeLeft}s</Text>
+          </View>
+          <View style={styles.scoreBox}>
+            <Text style={styles.scoreLabel}>ĐIỂM</Text>
+            <Text style={styles.scoreValue}>{score}</Text>
+          </View>
+          <View style={styles.livesRow}>{renderLives()}</View>
+        </View>
+
+        <View style={styles.progressContainer}>
+          <View style={[styles.progressFill, { width: progressPct, backgroundColor: progressColor }]} />
+        </View>
+
+        <Text style={styles.roundLabel}>VÒNG {roundsWon + 1}</Text>
+      </Animated.View>
+
+      {/* ── BOARD ─────────────────────────────────────────────── */}
       <ScrollView contentContainerStyle={styles.board} showsVerticalScrollIndicator={false}>
         <View style={styles.columns}>
+
           {/* CỘT TỪ */}
           <View style={styles.column}>
             <Text style={styles.colLabel}>ENGLISH</Text>
             {gamePairs.map((item, idx) => {
-              const isMatched = matchedWords.includes(item.word);
+              const isMatched  = matchedWords.includes(item.word);
               const isSelected = selectedWord?.word === item.word;
-              const isWrong = wrongPair.includes(item.word) && selectedWord?.word === item.word;
+              const isWrong    = wrongPair.includes(item.word) && selectedWord?.word === item.word;
               return (
                 <TouchableOpacity
                   key={`w-${idx}`}
-                  disabled={isMatched || isGameOver || !isGameStarted}
+                  disabled={isMatched || isRoundOver || !isGameStarted}
                   onPress={() => setSelectedWord(item)}
-                  style={[styles.card, isSelected && styles.selectedCard, isMatched && styles.matchedCard, isWrong && styles.wrongCard]}
+                  style={[
+                    styles.card,
+                    isSelected && styles.selectedCard,
+                    isMatched  && styles.matchedCard,
+                    isWrong    && styles.wrongCard,
+                  ]}
                 >
-                  <Text style={[styles.wordText, isMatched && styles.matchedText]}>{item.word}</Text>
-                  {!isMatched && <View style={styles.tag}><Text style={styles.tagText}>{item.source}</Text></View>}
+                  <Text style={[styles.wordText, isMatched && styles.matchedText]}>
+                    {item.word}
+                  </Text>
+                  {!isMatched && (
+                    <View style={styles.tag}>
+                      <Text style={styles.tagText}>{item.source}</Text>
+                    </View>
+                  )}
+                  {isMatched && (
+                    <Ionicons
+                      name="checkmark-circle"
+                      size={16}
+                      color="#2D5A27"
+                      style={{ position: 'absolute', top: 6, right: 8 }}
+                    />
+                  )}
                 </TouchableOpacity>
               );
             })}
@@ -182,23 +463,33 @@ const WordMatchGame = ({ navigation }: any) => {
           <View style={styles.column}>
             <Text style={styles.colLabel}>MEANING</Text>
             {shuffledDefs.map((item, idx) => {
-              const isMatched = matchedWords.includes(item.word);
+              const isMatched  = matchedWords.includes(item.word);
               const isSelected = selectedDef?.word === item.word;
-              const isWrong = wrongPair.includes(item.word) && selectedDef?.word === item.word;
+              const isWrong    = wrongPair.includes(item.word) && selectedDef?.word === item.word;
               return (
                 <TouchableOpacity
                   key={`d-${idx}`}
-                  disabled={isMatched || isGameOver || !isGameStarted}
+                  disabled={isMatched || isRoundOver || !isGameStarted}
                   onPress={() => setSelectedDef(item)}
-                  style={[styles.card, styles.defCard, isSelected && styles.selectedCard, isMatched && styles.matchedCard, isWrong && styles.wrongCard]}
+                  style={[
+                    styles.card,
+                    styles.defCard,
+                    isSelected && styles.selectedCard,
+                    isMatched  && styles.matchedCard,
+                    isWrong    && styles.wrongCard,
+                  ]}
                 >
-                  <Text style={[styles.defText, isMatched && styles.matchedText]} numberOfLines={4}>
+                  <Text
+                    style={[styles.defText, isMatched && styles.matchedText]}
+                    numberOfLines={4}
+                  >
                     {item.definition}
                   </Text>
                 </TouchableOpacity>
               );
             })}
           </View>
+
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -207,37 +498,118 @@ const WordMatchGame = ({ navigation }: any) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#FFF5F7' },
-  // Start Screen styles
-  overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(255, 245, 247, 0.95)', zIndex: 10, justifyContent: 'center', alignItems: 'center' },
-  startCard: { width: width * 0.85, backgroundColor: 'white', padding: 40, borderRadius: 30, alignItems: 'center', elevation: 10, shadowColor: '#FFB7C5', shadowOpacity: 0.3, shadowRadius: 15 },
-  startTitle: { fontSize: 26, fontWeight: 'bold', color: '#4A4A4A', marginTop: 20 },
-  startSub: { textAlign: 'center', color: '#9E9E9E', marginTop: 10, lineHeight: 20 },
-  startBtn: { backgroundColor: '#FFB7C5', paddingVertical: 15, paddingHorizontal: 40, borderRadius: 20, marginTop: 30 },
+
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(255,245,247,0.96)',
+    zIndex: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  startCard: {
+    width: width * 0.85,
+    backgroundColor: 'white',
+    padding: 36,
+    borderRadius: 34,
+    alignItems: 'center',
+    elevation: 12,
+    shadowColor: '#FFB7C5',
+    shadowOpacity: 0.35,
+    shadowRadius: 18,
+  },
+  startTitle:   { fontSize: 26, fontWeight: 'bold', color: '#4A4A4A', marginTop: 18 },
+  startBtn:     { backgroundColor: '#FFB7C5', paddingVertical: 15, paddingHorizontal: 44, borderRadius: 22, marginTop: 28 },
   startBtnText: { color: 'white', fontWeight: 'bold', fontSize: 16, letterSpacing: 1 },
 
-  headerCard: { padding: 20, backgroundColor: 'white', borderBottomLeftRadius: 30, borderBottomRightRadius: 30, elevation: 5, shadowColor: '#FFB7C5', shadowOpacity: 0.1 },
-  timerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
-  timerText: { fontSize: 24, fontWeight: 'bold', marginLeft: 8, color: '#4A4A4A' },
-  progressContainer: { height: 10, backgroundColor: '#F0F0F0', borderRadius: 5, overflow: 'hidden' },
-  progressFill: { height: '100%' },
-  board: { padding: 15, paddingTop: 20 },
+  winFlash: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#4CAF50',
+    zIndex: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  winFlashTitle: { fontSize: 34, fontWeight: 'bold', color: 'white', marginTop: 16 },
+  winFlashSub:   { fontSize: 22, color: 'rgba(255,255,255,0.85)', marginTop: 8, fontWeight: '600' },
+
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.55)', justifyContent: 'center', alignItems: 'center' },
+  resultCard:   { width: width * 0.85, backgroundColor: 'white', borderRadius: 40, padding: 32, alignItems: 'center', elevation: 20 },
+  resultTitle:  { fontSize: 28, fontWeight: 'bold', color: '#4A4A4A', marginTop: 14 },
+
+  scoreBoard: {
+    flexDirection: 'row', alignItems: 'center', marginVertical: 22,
+    backgroundColor: '#FFF5F7', borderRadius: 20,
+    paddingVertical: 16, paddingHorizontal: 28,
+    width: '100%', justifyContent: 'center',
+  },
+  scoreStat:      { alignItems: 'center', flex: 1 },
+  scoreStatNum:   { fontSize: 36, fontWeight: 'bold', color: '#FFB7C5' },
+  scoreStatLabel: { fontSize: 10, fontWeight: '900', color: '#CCC', letterSpacing: 1.5, marginTop: 2 },
+  scoreDivider:   { width: 1, height: 50, backgroundColor: '#F0D0D8', marginHorizontal: 10 },
+
+  resultMainBtn: { width: '100%', borderRadius: 20, overflow: 'hidden', marginBottom: 14 },
+  gradientBtn:   { padding: 18, alignItems: 'center' },
+  resultBtnText: { color: 'white', fontWeight: 'bold', fontSize: 16, letterSpacing: 1 },
+  exitText:      { color: '#BBB', fontWeight: '600' },
+
+  headerCard: {
+    paddingHorizontal: 18, paddingTop: 12, paddingBottom: 10,
+    backgroundColor: 'white', borderBottomLeftRadius: 30, borderBottomRightRadius: 30,
+    elevation: 6, shadowColor: '#FFB7C5', shadowOpacity: 0.2, shadowRadius: 10,
+  },
+  statsRow:   { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
+  timerBox:   { flexDirection: 'row', alignItems: 'center' },
+  timerText:  { fontSize: 18, fontWeight: 'bold', marginLeft: 5 },
+  scoreBox:   { alignItems: 'center' },
+  scoreLabel: { fontSize: 9, fontWeight: '900', color: '#CCC', letterSpacing: 1.5 },
+  scoreValue: { fontSize: 20, fontWeight: 'bold', color: '#4A4A4A' },
+  livesRow:   { flexDirection: 'row' },
+
+  progressContainer: { height: 8, backgroundColor: '#F0F0F0', borderRadius: 4, overflow: 'hidden' },
+  progressFill:      { height: '100%', borderRadius: 4 },
+  roundLabel: { textAlign: 'center', fontSize: 10, fontWeight: '900', color: '#CCC', letterSpacing: 2, marginTop: 6 },
+
+  board:   { padding: 15, paddingTop: 20 },
   columns: { flexDirection: 'row', justifyContent: 'space-between' },
-  column: { width: '48%' },
-  colLabel: { textAlign: 'center', fontSize: 11, fontWeight: '900', color: '#BBB', marginBottom: 15, letterSpacing: 1.5 },
-  card: { backgroundColor: 'white', height: 100, borderRadius: 22, padding: 10, marginBottom: 15, justifyContent: 'center', alignItems: 'center', elevation: 3, shadowColor: '#FFB7C5', shadowOpacity: 0.2, borderWidth: 2, borderColor: 'transparent' },
-  defCard: { paddingHorizontal: 6 },
-  
-  // TRẠNG THÁI MÀU SẮC MỚI
+  column:  { width: '48%' },
+  colLabel:{ textAlign: 'center', fontSize: 11, fontWeight: '900', color: '#BBB', marginBottom: 15, letterSpacing: 1.5 },
+
+  card: {
+    backgroundColor: 'white', height: 100, borderRadius: 22,
+    padding: 10, marginBottom: 15, justifyContent: 'center', alignItems: 'center',
+    elevation: 3, shadowColor: '#FFB7C5', shadowOpacity: 0.2,
+    borderWidth: 2, borderColor: 'transparent',
+  },
+  defCard:      { paddingHorizontal: 6 },
   selectedCard: { borderColor: '#FFB7C5', backgroundColor: '#FFF0F3' },
-  matchedCard: { backgroundColor: '#E2F5E1', borderColor: '#A8D5BA', elevation: 0 }, // Xanh lá Pastel
-  wrongCard: { backgroundColor: '#FFE5E5', borderColor: '#FFB3B3' },
-  
-  wordText: { fontSize: 17, fontWeight: 'bold', color: '#4A4A4A', textAlign: 'center' },
-  defText: { fontSize: 12, color: '#666', textAlign: 'center', lineHeight: 16 },
-  matchedText: { color: '#2D5A27', fontWeight: 'bold' }, // Chữ xanh đậm, không gạch
-  
-  tag: { position: 'absolute', top: 6, right: 8, backgroundColor: '#FFF5F7', paddingHorizontal: 6, borderRadius: 5, borderWidth: 0.5, borderColor: '#FFDEE9' },
+  matchedCard:  { backgroundColor: '#E2F5E1', borderColor: '#A8D5BA', elevation: 0 },
+  wrongCard:    { backgroundColor: '#FFE5E5', borderColor: '#FFB3B3' },
+
+  wordText:    { fontSize: 17, fontWeight: 'bold', color: '#4A4A4A', textAlign: 'center' },
+  defText:     { fontSize: 12, color: '#666', textAlign: 'center', lineHeight: 16 },
+  matchedText: { color: '#2D5A27', fontWeight: 'bold' },
+
+  tag:     { position: 'absolute', top: 6, right: 8, backgroundColor: '#FFF5F7', paddingHorizontal: 6, borderRadius: 5, borderWidth: 0.5, borderColor: '#FFDEE9' },
   tagText: { fontSize: 8, color: '#FFB7C5', fontWeight: 'bold' },
+
+  exitCard: {
+    width: width * 0.8,
+    backgroundColor: 'white',
+    borderRadius: 35,
+    padding: 25,
+    alignItems: 'center',
+    elevation: 20,
+    shadowColor: '#FFB7C5',
+    shadowOpacity: 0.3,
+    shadowRadius: 15,
+  },
+  exitTitle: { fontSize: 20, fontWeight: 'bold', color: '#4A4A4A', marginTop: 15, textAlign: 'center' },
+  exitSub:   { fontSize: 14, color: '#9E9E9E', textAlign: 'center', marginTop: 10, lineHeight: 20 },
+  exitBtnRow: { flexDirection: 'row', marginTop: 30, width: '100%', justifyContent: 'space-between' },
+  cancelBtn:     { flex: 1, paddingVertical: 15, marginRight: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 15, backgroundColor: '#F5F5F5' },
+  cancelBtnText: { color: '#888', fontWeight: '600' },
+  confirmExitBtn: { flex: 1, borderRadius: 15, overflow: 'hidden' },
+  gradExit:       { paddingVertical: 15, justifyContent: 'center', alignItems: 'center' },
+  confirmBtnText: { color: 'white', fontWeight: 'bold' },
 });
 
 export default WordMatchGame;
