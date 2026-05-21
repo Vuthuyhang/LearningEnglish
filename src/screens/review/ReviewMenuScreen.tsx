@@ -36,10 +36,10 @@ const { highScores, fetchHighScores } = useReviewStore();
     {
       id: 'quiz',
       title: 'Vocabulary Quiz',
-      score: '591',
+      // score: '591',
       icon: 'list',
       color: '#D4F0F0',
-      route: null,
+      route: REVIEW_ROUTES.GAME_QUIZ,
     },
   ];
 
@@ -49,24 +49,21 @@ const { highScores, fetchHighScores } = useReviewStore();
       <ScrollView contentContainerStyle={styles.scrollPadding}>
         {games.map((game) => (
           <View key={game.id} style={styles.gameCard}>
-            {/* Khối Icon bên trái */}
+           
             <View style={[styles.iconContainer, { backgroundColor: game.color }]}>
               <Ionicons name={game.icon} size={35} color="white" />
             </View>
 
-            {/* Thông tin ở giữa */}
+          
             <View style={styles.infoContainer}>
               <Text style={styles.gameTitle}>{game.title}</Text>
               <Text style={styles.highScore}>
                 High-score: {(highScores[game.id] || 0).toLocaleString()}
               </Text>
-              <View style={styles.badgeRow}>
-                 <View style={styles.coinBadge}><Text style={styles.badgeText}>H</Text></View>
-                 <Text style={styles.pointsText}>25</Text>
-              </View>
+              
             </View>
 
-            {/* Nút chơi ngay bên phải */}
+            
             <TouchableOpacity 
               style={styles.playBtn}
               onPress={() => game.route && navigation.navigate(game.route)}

@@ -101,7 +101,7 @@ const HomeScreen = ({ navigation }: any) => {
           {vocabList.length === 0 && <Text style={styles.emptyText}>Chưa có từ vựng nào được lưu 🌸</Text>}
         </View>
 
-        {/* BÁO TIẾNG ANH MỚI NHẤT (Lấy từ News Store) */}
+        {/* BÁO TIẾNG ANH MỚI NHẤT */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Báo Tiếng Anh Mới Nhất</Text>
           <TouchableOpacity onPress={() => navigation.navigate(MAIN_TAB_ROUTES.NEWS_STACK)}>

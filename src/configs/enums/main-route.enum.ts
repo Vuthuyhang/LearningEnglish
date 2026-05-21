@@ -43,8 +43,7 @@ export enum REVIEW_ROUTES {
   // REVIEW_TOEIC = 'ReviewToeic',
   // REVIEW_IELTS = 'ReviewIelts',
   // REVIEW_FLASHCARD = 'ReviewFlashcard',
-  // REVIEW_QUIZ = 'ReviewQuiz',
   GAME_MATCH = 'WordMatchGame',
   GAME_SCRAMBLE = 'WordScrambleGame',
-  GAME_QUIZ = 'QuizRushGame',
+  GAME_QUIZ = 'VocabularyQuizGame',
 }
