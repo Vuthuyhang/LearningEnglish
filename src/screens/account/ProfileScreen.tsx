@@ -9,7 +9,7 @@ import { DateUtil } from '../../utils/date.util';
 import { Colors } from '../../common/constants/Colors';
 import { useAuthStore } from '../../features/auth/auth.store';
 import { ACCOUNT_ROUTES } from '../../configs/enums/main-route.enum';
-import LinearGradient from 'react-native-linear-gradient'; // Bỏ dấu ngoặc nhọn ở đây
+import LinearGradient from 'react-native-linear-gradient'; 
 
 const ProfileScreen = ({ navigation }: any) => {
   const { user } = useAuthStore();

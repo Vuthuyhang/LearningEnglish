@@ -10,9 +10,9 @@ const Stack = createNativeStackNavigator();
 export const AuthNavigator = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name={AUTH_ROUTES.LOGIN} component={LoginScreen} />
-      <Stack.Screen name={AUTH_ROUTES.REGISTER} component={RegisterScreen} />
-      <Stack.Screen name={AUTH_ROUTES.FORGOTPASSWORD} component={ForgotPasswordScreen} />
+      <Stack.Screen name={AUTH_ROUTES.LOGIN} component={LoginScreen} options = {{ title: 'Đăng nhập' }}/>
+      <Stack.Screen name={AUTH_ROUTES.REGISTER} component={RegisterScreen} options = {{ title: 'Đăng ký' }}/>
+      <Stack.Screen name={AUTH_ROUTES.FORGOTPASSWORD} component={ForgotPasswordScreen} options = {{ title: 'Quên mật khẩu' }}/>
 
     </Stack.Navigator>
   );

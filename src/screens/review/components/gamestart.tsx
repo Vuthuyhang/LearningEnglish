@@ -16,7 +16,7 @@ const GameStartOverlay = ({ title, icon, onStart }: Props) => (
     <View style={styles.startCard}>
       <Ionicons name={icon} size={80} color={Colors.primary || '#FFD1DC'} />
       <Text style={styles.startTitle}>{title}</Text>
-      <Text style={styles.startSub}>Bạn đã sẵn sàng chinh phục thử thách này chưa? ✨</Text>
+      <Text style={styles.startSub}>Sẵn sàng</Text>
       <TouchableOpacity style={styles.startBtn} onPress={onStart}>
         <Text style={styles.startBtnText}>BẮT ĐẦU CHƠI</Text>
       </TouchableOpacity>

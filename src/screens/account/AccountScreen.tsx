@@ -1,13 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Switch, SafeAreaView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Colors } from '../../common/constants/Colors';
 import { useAuthStore } from '../../features/auth/auth.store';
 import { ACCOUNT_ROUTES, AUTH_ROUTES } from '../../configs/enums/main-route.enum';
+import firestore from '@react-native-firebase/firestore';
 
 const AccountScreen = ({ navigation }: any) => {
     const { isLoggedIn, user, logout } = useAuthStore();
     const [isSoundEnabled, setIsSoundEnabled] = useState(true);
+    const [extraInfo, setExtraInfo] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+    const fetchUserData = async () => {
+      if (user?.uid) {
+        try {
+          const doc = await firestore().collection('users').doc(user.uid).get();
+          if (doc.exists()) {
+            setExtraInfo(doc.data());
+          }
+        } catch (error) {
+          console.log("Lỗi lấy thông tin:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchUserData();
+  }, [user]);
 
     const SettingItem = ({icon, title, value, onPress, isSwitch}: any) =>(
         <TouchableOpacity style={styles.menuItem} onPress={onPress} disabled={isSwitch}>
@@ -45,7 +66,7 @@ const AccountScreen = ({ navigation }: any) => {
                         <View style={styles.headerContent}>
                             <Image source={{ uri: user?.photoURL || 'https://i.pravatar.cc/150' }} style={styles.avatar} />
                             <View style={styles.headerText}>
-                                <Text style={styles.userName}>{user?.displayName || 'Guest'}</Text>
+                                <Text style={styles.userName}>{extraInfo?.displayName || extraInfo?.name || user?.displayName}</Text>
                                 <Text style={styles.viewInfo}>Xem thông tin cá nhân</Text>
                             </View>
                             <Ionicons name="chevron-forward" size={24} color={Colors.primary}/>
@@ -74,7 +95,7 @@ const AccountScreen = ({ navigation }: any) => {
                    <Text style={styles.sectionLabel}>ỨNG DỤNG</Text> 
                     <SettingItem icon="language-outline" title="Ngôn ngữ" value="Tiếng Việt" />
                     <SettingItem icon="volume-high-outline" title="Âm thanh" isSwitch value={isSoundEnabled} />  */}
-                    <SettingItem icon="settings-outline" title="Cài đặt" />
+                    <SettingItem icon="settings-outline" title="Cài đặt" onPress={() => navigation.navigate(ACCOUNT_ROUTES.SETTINGS)}   />
                     <SettingItem icon="information-circle-outline" title="Giới thiệu" />
                     <SettingItem icon="call-outline" title="Liên hệ" />
                 </View>

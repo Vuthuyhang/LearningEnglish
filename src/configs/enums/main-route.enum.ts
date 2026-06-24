@@ -27,6 +27,7 @@ export enum ACCOUNT_ROUTES {
   PROFILE = 'Profile',
   EDIT_PROFILE = 'EditProfile',
   NOTIFICATIONS = 'Notifications',
+  SETTINGS = 'SettingScreen',
   LANGUAGE = 'Language',
 }
 
@@ -35,6 +36,7 @@ export enum VOCAB_ROUTES {
   SAVED_LIST = 'SavedList',
   TOEIC_LIST = 'ToeicList',
   IELTS_LIST = 'IeltsList',
+  WORD_DETAIL = 'WordDetail',
 }
 
 export enum REVIEW_ROUTES {

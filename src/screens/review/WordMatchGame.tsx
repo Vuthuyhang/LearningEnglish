@@ -200,7 +200,6 @@ const WordMatchGame = ({ navigation }: any) => {
   return (
     <SafeAreaView style={styles.container}>
       
-      {/* ── COMMON COMPONENTS ── */}
       {!isGameStarted && <GameStart title="Word Match" icon="extension-puzzle" onStart={startGame} />}
       
       {showRoundWin && <GameWinFlash opacity={overlayOpacity} points={POINTS_WIN} />}
@@ -211,7 +210,7 @@ const WordMatchGame = ({ navigation }: any) => {
       
       <GameHeader timeLeft={timeLeft} totalTime={ROUND_TIME} score={score} lives={lives} maxLives={MAX_LIVES} roundText={`VÒNG ${roundsWon + 1}`} shakeAnim={shakeAnim} />
 
-      {/* ── BOARD GAME (Mã riêng của Word Match) ── */}
+  
       <ScrollView contentContainerStyle={styles.board} showsVerticalScrollIndicator={false}>
         <View style={styles.columns}>
           {/* CỘT TỪ */}

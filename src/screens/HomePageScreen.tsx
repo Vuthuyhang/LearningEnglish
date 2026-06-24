@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -14,8 +14,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Colors } from '../common/constants/Colors';
 import { useAuthStore } from '../features/auth/auth.store';
 import { useNewsStore } from '../features/news/news.store';
+import { GuardianArticle } from '../features/news/news.model';
 import { useVocabularyStore } from '../features/vocabulary/vocab.store';
 import { MAIN_TAB_ROUTES, NEWS_ROUTES } from '../configs/enums/main-route.enum';
+import firestore from '@react-native-firebase/firestore';
 
 const { width } = Dimensions.get('window');
 
@@ -23,14 +25,38 @@ const HomeScreen = ({ navigation }: any) => {
   const { user } = useAuthStore();
   const { articles, fetchNews } = useNewsStore();
   const { vocabList, fetchVocab } = useVocabularyStore();
+  const [fullName, setFullName] = useState('');
+
+  // Hàm lấy tên đầy đủ của người dùng từ Firestore
+  const fetchFullName = async () => {
+    if (user?.uid) {
+      try {
+        const doc = await firestore().collection('users').doc(user.uid).get();
+        if (doc.exists()) {
+          setFullName(doc.data()?.fullName || '');
+        }
+      } catch (error) {
+        console.log('Lỗi lấy tên:', error);
+      }
+    }
+  };
 
   // Lấy dữ liệu mới nhất khi vào trang chủ
   useEffect(() => {
     if (user?.uid) {
       fetchNews();
       fetchVocab(user.uid);
+      fetchFullName();
     }
   }, []);
+
+  // Cập nhật tên mỗi khi tab được focus
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchFullName();
+    });
+    return unsubscribe;
+  }, [navigation, user]);
 
   // Hàm điều hướng đến bài báo
   const goToReading = (article: any) => {
@@ -40,18 +66,25 @@ const HomeScreen = ({ navigation }: any) => {
     });
   };
 
-  const renderNewsItem = ({ item }: any) => (
-    <TouchableOpacity style={styles.newsCard} onPress={() => goToReading(item)}>
-      <Image source={{ uri: item.urlToImage || 'https://via.placeholder.com/150' }} style={styles.newsImage} />
-      <View style={styles.newsInfo}>
-        <Text style={styles.newsSource} numberOfLines={1}>{item.source.name}</Text>
-        <Text style={styles.newsTitle} numberOfLines={2}>{item.title}</Text>
-        <View style={styles.tagLabel}>
-          <Text style={styles.tagText}>Báo Tiếng Anh</Text>
-        </View>
+  const renderNewsItem = ({ item }: { item: GuardianArticle }) => (
+  <TouchableOpacity style={styles.newsCard} onPress={() => goToReading(item)}>
+    <Image 
+      source={{ uri: item.fields?.thumbnail || 'https://via.placeholder.com/150' }} 
+      style={styles.newsImage} 
+    />
+    <View style={styles.newsInfo}>
+      <Text style={styles.newsSource} numberOfLines={1}>
+        {item.sectionName}  {/* thay item.source.name */}
+      </Text>
+      <Text style={styles.newsTitle} numberOfLines={2}>
+        {item.webTitle}     {/* thay item.title */}
+      </Text>
+      <View style={styles.tagLabel}>
+        <Text style={styles.tagText}>Báo Tiếng Anh</Text>
       </View>
-    </TouchableOpacity>
-  );
+    </View>
+  </TouchableOpacity>
+);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -64,7 +97,8 @@ const HomeScreen = ({ navigation }: any) => {
               source={{ uri: user?.photoURL || 'https://i.pravatar.cc/100' }} 
               style={styles.avatar} 
             />
-            <Text style={styles.appName}>LinguaPink</Text>
+            {/* <Text style={styles.greeting}>Xin chào </Text> */}
+            <Text style={styles.appName}>{fullName || user?.displayName || 'Bạn ơi'}</Text>
           </View>
           <TouchableOpacity style={styles.notifBtn}>
             <Ionicons name="notifications-outline" size={26} color={Colors.text} />
@@ -98,7 +132,7 @@ const HomeScreen = ({ navigation }: any) => {
               <Text style={styles.vocabDef} numberOfLines={1}>{item.definition}</Text>
             </View>
           ))}
-          {vocabList.length === 0 && <Text style={styles.emptyText}>Chưa có từ vựng nào được lưu 🌸</Text>}
+          {vocabList.length === 0 && <Text style={styles.emptyText}>Chưa có từ vựng nào được lưu </Text>}
         </View>
 
         {/* BÁO TIẾNG ANH MỚI NHẤT */}
@@ -154,7 +188,8 @@ const styles = StyleSheet.create({
   },
   headerLeft: { flexDirection: 'row', alignItems: 'center' },
   avatar: { width: 45, height: 45, borderRadius: 22.5, marginRight: 12, borderWidth: 2, borderColor: 'white' },
-  appName: { fontSize: 24, fontWeight: 'bold', color: '#4A4A4A' },
+  appName: { fontSize: 18, fontWeight: 'bold', color: '#4A4A4A' },
+  greeting: { fontSize: 13, fontWeight: 'bold', color: '#4A4A4A' },
   notifBtn: { backgroundColor: 'white', padding: 8, borderRadius: 12 },
   notifBadge: { position: 'absolute', top: 8, right: 8, width: 10, height: 10, backgroundColor: '#FF6B6B', borderRadius: 5, borderWidth: 2, borderColor: 'white' },
   
@@ -211,6 +246,8 @@ const styles = StyleSheet.create({
   challengePoints: { fontWeight: 'bold', color: '#4A4A4A' },
   challengeStreak: { fontSize: 11, color: '#999' },
   emptyText: { textAlign: 'center', color: '#BBB', fontStyle: 'italic' }
+
+
 });
 
 export default HomeScreen;

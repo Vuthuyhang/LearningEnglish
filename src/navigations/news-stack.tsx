@@ -9,8 +9,8 @@ const Stack = createNativeStackNavigator();
 export const NewsStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: true }}>
-      <Stack.Screen name={NEWS_ROUTES.NEWS_FEED} component={NewsFeedScreen}/>
-      <Stack.Screen name={NEWS_ROUTES.READING} component={ReadingScreen}  />
+      <Stack.Screen name={NEWS_ROUTES.NEWS_FEED} component={NewsFeedScreen} options={{ title: 'Tin tức' }} />
+      <Stack.Screen name={NEWS_ROUTES.READING} component={ReadingScreen} options={{ title: 'Đọc báo' }} />
     </Stack.Navigator>
   );
 };

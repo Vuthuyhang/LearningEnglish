@@ -4,14 +4,16 @@ import { ACCOUNT_ROUTES} from '../configs/enums/main-route.enum';
 import AccountScreen from '../screens/account/AccountScreen';
 import ProfileScreen from '../screens/account/ProfileScreen';
 import EditProfileScreen from '../screens/account/EditProfileScreen';
+import SettingScreen from '../screens/account/settings/SettingScreen';
 const Stack = createNativeStackNavigator();
 
 export const AccountStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: true }}>
-      <Stack.Screen name={ACCOUNT_ROUTES.ACCOUNT_MENU} component={AccountScreen}/>
-      <Stack.Screen name={ACCOUNT_ROUTES.PROFILE} component={ProfileScreen}  />
-      <Stack.Screen name={ACCOUNT_ROUTES.EDIT_PROFILE} component={EditProfileScreen} />
+      <Stack.Screen name={ACCOUNT_ROUTES.ACCOUNT_MENU} component={AccountScreen} options={{ title: 'Tài khoản' }} />
+      <Stack.Screen name={ACCOUNT_ROUTES.PROFILE} component={ProfileScreen} options={{ title: 'Hồ sơ' }} />
+      <Stack.Screen name={ACCOUNT_ROUTES.EDIT_PROFILE} component={EditProfileScreen} options={{ title: 'Chỉnh sửa hồ sơ' }} />
+      <Stack.Screen name={ACCOUNT_ROUTES.SETTINGS} component={SettingScreen} options={{ title: 'Cài đặt' }} />
 
       {/* <Stack.Screen name={ACCOUNT_ROUTES.Account_SAVED} component={AccountSavedScreen}  />
       <Stack.Screen name={ACCOUNT_ROUTES.Account_TOEIC} component={AccountToeicScreen} />

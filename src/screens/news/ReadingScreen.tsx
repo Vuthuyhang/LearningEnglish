@@ -14,11 +14,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useVocabularyStore } from '../../features/vocabulary/vocab.store';
 import { DictaionaryService } from '../../features/dictionary/dictionary.service';
 import SaveButton from '../../common/components/SaveButton';
+import { GuardianArticle } from '../../features/news/news.model';
 
 const { width } = Dimensions.get('window');
 
 const ReadingScreen = ({ route }: any) => {
-  const { article } = route.params;
+  const  article  = route?.params?.article as GuardianArticle;
 
   const { user } = useAuthStore();
   const { fetchVocab } = useVocabularyStore();
@@ -102,16 +103,16 @@ const ReadingScreen = ({ route }: any) => {
       <SafeAreaView style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <Image
-            source={{ uri: article.urlToImage || 'https://via.placeholder.com/400x250' }}
+            source={{ uri: article.fields?.thumbnail || 'https://via.placeholder.com/400x250' }}
             style={styles.image}
           />
 
           <View style={styles.contentContainer}>
             <View style={styles.titleContainer}>
-              <Text style={styles.title}>{article.title}</Text>
+              <Text style={styles.title}>{article.webTitle}</Text>
               <TouchableOpacity 
                 style={styles.audioButton} 
-                onPress={() => speak((article.description || "") + " " + (article.content || ""))}
+                onPress={() => speak((article.fields?.bodyText || "") + " " + (article.fields?.trailText || ""))}
               >
                 <Ionicons 
                   name={isPlaying ? "pause-circle" : "play-circle-outline"} 
@@ -122,17 +123,18 @@ const ReadingScreen = ({ route }: any) => {
             </View>
 
             <View style={styles.metaRow}>
-              <Text style={styles.metaText}>{article.source.name}</Text>
+              <Text style={styles.metaText}>{article.sectionName}</Text>
               <Text style={styles.metaText}> • </Text>
               <Text style={styles.metaText}>
-                {new Date(article.publishedAt).toLocaleDateString()}
+                {new Date( article.webPublicationDate).toLocaleDateString()}
               </Text>
             </View>
 
             <View style={styles.body}>
-              {renderInteractiveContent(article.description || '')}
+              {/* {renderInteractiveContent(article.description || '')} */}
+              {renderInteractiveContent(article.fields?.bodyText || 'Nội dung đang được tải...')}
               <View style={{ height: 15 }} />
-              {renderInteractiveContent(article.content?.split('[+')[0] || '')}
+              {renderInteractiveContent(article.fields?.trailText || '')}
             </View>
 
             <View style={{ height: 100 }} />

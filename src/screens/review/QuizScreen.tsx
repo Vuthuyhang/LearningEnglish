@@ -19,7 +19,7 @@ import GameExitModal from './components/gameexist';
 import GameResult from './components/gameresult';
 
 const { width } = Dimensions.get('window');
-const QUESTION_TIME = 15; // 15 giây mỗi câu
+const QUESTION_TIME = 15; 
 const MAX_LIVES = 3;
 
 const VocabularyQuizGame = ({ navigation }: any) => {
@@ -27,7 +27,7 @@ const VocabularyQuizGame = ({ navigation }: any) => {
   const { user } = useAuthStore();
   const { updateHighScore } = useReviewStore();
 
-  // ─── States ───
+  //States
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
   const [showResultModal, setShowResultModal] = useState(false);
@@ -43,19 +43,19 @@ const VocabularyQuizGame = ({ navigation }: any) => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [correctOption, setCorrectOption] = useState<string | null>(null);
 
-  // ─── Refs & Anims ───
+  //ref
   const poolRef = useRef<any[]>([]);
   const scoreRef = useRef(0);
   const shakeAnim = useRef(new Animated.Value(0)).current;
   const [pendingAction, setPendingAction] = useState<any>(null);
 
-  // ─── Sound Refs ───
+  
   const bgMusic = useRef<Sound | null>(null);
   const sfxCorrect = useRef(new Sound('correct.mp3', Sound.MAIN_BUNDLE));
   const sfxWrong = useRef(new Sound('wrong.mp3', Sound.MAIN_BUNDLE));
   const sfxFail = useRef(new Sound('fail2.mp3', Sound.MAIN_BUNDLE));
 
-  // 1. Khởi tạo dữ liệu
+  //Khởi tạo dữ liệu
   useEffect(() => {
     const data = [
       ...vocabList.map(i => ({ ...i, source: 'Personal' })),
@@ -74,7 +74,7 @@ const VocabularyQuizGame = ({ navigation }: any) => {
     };
   }, []);
 
-  // 2. Logic tạo câu hỏi trắc nghiệm
+  //Logic tạo câu hỏi trắc nghiệm
   const generateQuestion = (index: number) => {
     if (index >= poolRef.current.length) {
       // Nếu hết từ thì xáo lại từ đầu
@@ -84,19 +84,19 @@ const VocabularyQuizGame = ({ navigation }: any) => {
 
     const correctWord = poolRef.current[index];
     
-    // Tạo 3 đáp án sai ngẫu nhiên
+    //Tạo 3 đáp án sai ngẫu nhiên
     const distractors = poolRef.current
       .filter(item => item.word !== correctWord.word)
       .sort(() => 0.5 - Math.random())
       .slice(0, 3);
 
-    // Trộn đáp án đúng vào 3 đáp án sai
+    //Trộn đáp án đúng vào 3 đáp án sai
     const allOptions = [...distractors, correctWord].sort(() => 0.5 - Math.random());
 
     setCurrentQuestion(correctWord);
     setOptions(allOptions);
     setSelectedOption(null);
-    setCorrectOption(null);
+    setCorrectOption(null); 
     setTimeLeft(QUESTION_TIME);
   };
   //logic chặn thoát
@@ -105,17 +105,17 @@ const VocabularyQuizGame = ({ navigation }: any) => {
       // Nếu game đã kết thúc hoặc chưa bắt đầu, cho phép thoát thẳng
       if (isGameOver || !isGameStarted) return;
 
-      // Chặn hành động thoát
+      //Chặn hành động thoát
       e.preventDefault();
-      setIsPaused(true); // Dừng đồng hồ
+      setIsPaused(true); //Dừng đồng hồ
       setPendingAction(e.data.action);
-      setShowExitModal(true); // Hiện Modal xác nhận
+      setShowExitModal(true); //Hiện Modal xác nhận
     });
 
     return unsubscribe;
   }, [navigation, isGameOver, isGameStarted]);
 
-  // 3. Timer Logic
+  //Timer Logic
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
     if (isGameStarted && timeLeft > 0 && !showResultModal && !isPaused && !correctOption) {
@@ -153,7 +153,7 @@ const VocabularyQuizGame = ({ navigation }: any) => {
         generateQuestion(questionCount + 1);
       }, 1000);
     } else {
-      // SAI
+      //SAI
       sfxWrong.current.stop().play();
       triggerShake();
       const newLives = lives - 1;
@@ -191,7 +191,7 @@ const VocabularyQuizGame = ({ navigation }: any) => {
     if (bgMusic.current) bgMusic.current.stop();
     setShowExitModal(false);
     if (pendingAction) {
-        navigation.dispatch(pendingAction); // Thực hiện lệnh thoát đã chặn lúc nãy
+        navigation.dispatch(pendingAction); //Thực hiện lệnh thoát đã chặn lúc nãy
     }
   };
 
@@ -213,7 +213,7 @@ const VocabularyQuizGame = ({ navigation }: any) => {
       <GameResult 
         visible={showResultModal} 
         score={score} 
-        roundsWon={questionCount} 
+        roundsWon={score/10} 
         onRestart={() => navigation.replace('VocabularyQuizGame')} 
         onExit={() => navigation.goBack()} 
       />
@@ -286,13 +286,13 @@ const styles = StyleSheet.create({
 },
   optionBtn: {
     backgroundColor: 'white',
-    width: '48%',            // Mỗi nút chiếm gần một nửa chiều rộng màn hình
-    height: 120,             // Cố định chiều cao để 4 ô vuông vức bằng nhau
+    width: '48%',            
+    height: 120,            
     borderRadius: 20,
-    marginBottom: 15,        // Khoảng cách giữa hàng trên và hàng dưới
+    marginBottom: 15,        
     padding: 10,
-    justifyContent: 'center', // Căn giữa chữ theo chiều dọc
-    alignItems: 'center',     // Căn giữa chữ theo chiều ngang
+    justifyContent: 'center', 
+    alignItems: 'center',     
     elevation: 3,
     shadowColor: '#FFB7C5',
     shadowOpacity: 0.2,
@@ -305,4 +305,3 @@ const styles = StyleSheet.create({
 });
 
 export default VocabularyQuizGame;
-//ở game quiz muốn chia các đáp án thành 2 hàng, 2 cột

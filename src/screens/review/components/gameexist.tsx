@@ -17,7 +17,7 @@ const GameExitModal = ({ visible, score, onCancel, onConfirm }: Props) => (
     <View style={styles.modalOverlay}>
       <View style={styles.exitCard}>
         <Ionicons name="warning" size={70} color="#FFB7C5" />
-        <Text style={styles.exitTitle}>Bạn muốn dừng chơi? 🌸</Text>
+        <Text style={styles.exitTitle}>Bạn muốn dừng chơi? </Text>
         <Text style={styles.exitSub}>
           Điểm số hiện tại ({score}) sẽ vẫn được lưu lại nếu đây là kỷ lục mới của bạn.
         </Text>
